@@ -1,0 +1,123 @@
+.custom-controls {
+	background-color: $dark;
+	// color: #dee2f7;
+	color: $lightgray;
+	font-size: 0.8rem;
+	line-height: 1.3;
+	width: 270px;
+	button.toggle-btn {
+		border: none;
+		color: $lightgray;
+		width: 100%;
+		text-align: left;
+		padding: 0 0.5rem;
+		position: relative;
+		font-size: 0.8rem;
+		height: 1.4rem;
+		line-height: 1;
+		display: flex;
+		align-items: center;
+
+		--toggleSize: 0.6rem;
+		&:after,
+		&:before {
+			width: var(--toggleSize);
+			height: var(--toggleSize);
+			background: $lightgray;
+			content: '';
+			display: block;
+			position: absolute;
+			right: 0.5rem;
+			transition: all 300ms;
+			top: 50%;
+			transform: translate(0, -50%) translate(0.1rem, -0.1rem);
+			clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 0%);
+		}
+		&:before {
+			border-top: none;
+			transform: translate(0, -50%) translate(-0.1rem, 0.1rem);
+			clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 0% 0%);
+		}
+
+		&[aria-expanded='false'] {
+			&:after,
+			&:before {
+				transform: translate(0, -50%);
+			}
+		}
+	}
+
+	.input-container {
+		margin-bottom: 3px;
+		label {
+			margin-bottom: 3px;
+		}
+		input[type='text'] {
+			&:focus {
+				outline: 1px solid $paleblue;
+			}
+		}
+	}
+
+	a {
+		color: $paleblue;
+		text-decoration: underline;
+		&:hover,
+		&:focus {
+			color: $spring;
+		}
+	}
+
+	.controls-inner {
+		padding: 0.5rem 0.5rem 0.3rem;
+		transition: all 300ms;
+		opacity: 1;
+		height: auto;
+		&.hidden {
+			opacity: 0;
+			padding: 0;
+			height: 0;
+		}
+	}
+
+	.error-label {
+		// color: #f50000;
+		// color: #ff1b1c;
+		color: #df2935;
+		font-weight: 500;
+		transition: all 300ms;
+		font-size: 0.8rem;
+	}
+}
+
+input[type='text'] {
+	background-color: $dark2;
+	border: none;
+	color: $lightgray;
+	width: 100%;
+	font-size: 0.8rem;
+	line-height: 1.6;
+	margin: 0;
+	padding: 0 0.4rem;
+	&:focus {
+		outline: 2px solid $paleblue;
+		color: white;
+	}
+}
+
+button {
+	background-color: $dark2;
+	border: none;
+	color: $lightgray;
+	margin: 0;
+	cursor: pointer;
+	padding: 4px 4px;
+	font-size: 0.8rem;
+	font-weight: 500;
+	transition: all 300ms;
+	&:hover,
+	&:focus {
+		background-color: $cadet;
+		font-weight: 700;
+	}
+}

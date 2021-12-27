@@ -1,0 +1,16 @@
+{
+	"name": "generative-art-2022",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "rm -rf dist/* && parcel serve src/pages/**.pug"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@parcel/transformer-sass": "^2.0.1",
+		"parcel": "^2.0.1"
+	}
+}
