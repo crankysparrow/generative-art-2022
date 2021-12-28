@@ -1,9 +1,18 @@
 import { paletteFromUrl } from './utils.js'
+import '../../styles/components/controls.scss'
 
 export class Controls {
 	constructor() {
+		this.shown = this.shownFromStorage() ?? true
 		this.container = this.buildContainer()
-		this.shown = true
+	}
+
+	shownFromStorage() {
+		let show = localStorage.getItem('showcontrols')
+
+		if (show) {
+			return boolean(show)
+		}
 	}
 
 	buildContainer() {
@@ -13,19 +22,25 @@ export class Controls {
 		let btn = createButton('toggle controls')
 			.class('toggle-btn')
 			.parent(outer)
-			.attribute('aria-expanded', 'true')
-		let c = createDiv().class('controls-inner').parent(outer)
+			.attribute('aria-expanded', this.shown ? 'true' : 'false')
+		let c = createDiv()
+			.class('controls-inner')
+			.parent(outer)
+			.attribute('aria-hidden', this.shown ? 'false' : 'true')
+		if (!this.shown) c.addClass('hidden')
 
 		btn.elt.addEventListener('click', () => {
 			if (this.shown) {
 				c.addClass('hidden')
 				c.attribute('aria-hidden', 'true')
 				btn.attribute('aria-expanded', 'false')
+				localStorage.setItem('showcontrols', 'false')
 				this.shown = false
 			} else {
 				c.removeClass('hidden')
 				c.attribute('aria-hidden', 'false')
 				btn.attribute('aria-expanded', 'true')
+				localStorage.setItem('showcontrols', 'true')
 				this.shown = true
 			}
 		})

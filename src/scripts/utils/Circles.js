@@ -11,6 +11,9 @@ export class AllTheCircles {
 		height,
 		space,
 		overlapEdges = false,
+		build = true,
+		attemptsEachStep = 1000,
+		stepSize = 2,
 	}) {
 		this.circles = []
 		this.size = size
@@ -21,8 +24,12 @@ export class AllTheCircles {
 		this.height = height
 		this.space = space ?? this.width * 0.01
 		this.overlapEdges = overlapEdges
+		this.attemptsEachStep = attemptsEachStep
+		this.stepSize = stepSize / 100
 
-		this.circleTime()
+		if (build) {
+			this.circleTime()
+		}
 	}
 
 	circleTime() {
@@ -33,9 +40,9 @@ export class AllTheCircles {
 			let i = 0
 			// ease out to subtract larger amounts first, then less as we get closer to the min
 			let multiplier = this.multMax - this.diff * easeOutCubic(sub)
-			let currentSize = this.size * multiplier
+			let currentSize = floor(this.size * multiplier)
 
-			while (i < 1000) {
+			while (i < this.attemptsEachStep) {
 				timesTried++
 				let c = new Circle(
 					Math.floor(random(this.width)),
@@ -50,7 +57,27 @@ export class AllTheCircles {
 				}
 			}
 
-			sub += 0.02
+			sub += this.stepSize
+		}
+		console.log({ timesTried, length: this.circles.length })
+	}
+
+	newCircle(size, attempts = 0, log = false) {
+		if (attempts > 10) {
+			if (log) {
+				console.log('size: ' + size + ' give up')
+			}
+			return
+		}
+		let c = new Circle(Math.floor(random(this.width)), Math.floor(random(this.height)), size)
+		if (this.checkOverlap(c)) {
+			attempts++
+			this.newCircle(size, attempts)
+		} else {
+			this.circles.push(c)
+			if (log) {
+				console.log({ size, attempts })
+			}
 		}
 	}
 

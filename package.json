@@ -2,14 +2,14 @@
 	"name": "generative-art-2022",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "rm -rf dist/* && parcel serve src/pages/**.pug"
+		"dev": "parcel serve src/pages/**.pug --lazy"
 	},
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
+		"@parcel/reporter-bundle-analyzer": "^2.0.1",
 		"@parcel/transformer-sass": "^2.0.1",
 		"parcel": "^2.0.1"
 	}
