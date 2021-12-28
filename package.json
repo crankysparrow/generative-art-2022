@@ -4,7 +4,7 @@
 	"description": "",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "parcel serve src/pages/**.pug --lazy"
+		"dev": "rm -rf dist/** && parcel serve 'src/pages/**/*.pug'"
 	},
 	"author": "",
 	"license": "ISC",
