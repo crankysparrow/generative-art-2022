@@ -1,15 +1,15 @@
-import { paletteFromUrl } from './utils/utils.js'
-import { AllTheCircles } from './utils/Circles.js'
-import { Controls } from './utils/Controls.js'
+import { paletteFromUrl } from '../utils/utils.js'
+import { AllTheCircles } from '../utils/Circles.js'
+import { Controls } from '../utils/Controls.js'
 
-window.addEventListener('unload', console.clear)
-if (module.hot) {
-	module.hot.dispose(() => {
-		window.location.reload()
-	})
-}
+// window.addEventListener('unload', console.clear)
+// if (module.hot) {
+// 	module.hot.dispose(() => {
+// 		window.location.reload()
+// 	})
+// }
 
-let circles, palette, controls, urlInput, paletteCurrent, m
+let circles, palette, controls, paletteCurrent, m, paletteInput
 // let url = 'https://coolors.co/985f99-9684a1-aaacb0-b6c9bb-bfedc1-f2ff49-ff4242'
 // let url = 'https://coolors.co/32de8a-5e807f-74226c-4b2142-dee2f7-19191d-252541'
 // let url = 'https://coolors.co/32de8a-5e807f-4b2142-19191d-252541'
@@ -18,10 +18,20 @@ let url = 'https://coolors.co/f94144-f3722c-f8961e-f9844a-f9c74f-90be6d-43aa8b-4
 
 function setup() {
 	createCanvas(window.innerWidth, window.innerHeight)
+	buildControls()
+
 	palette = shuffle(paletteFromUrl(url))
 	paletteCurrent = shuffle(palette)
+
 	noLoop()
 }
+
+// window.addEventListener('unload', console.clear)
+// if (module.hot) {
+// 	module.hot.dispose(() => {
+// 		window.location.reload()
+// 	})
+// }
 
 function buildControls() {
 	controls = new Controls()
@@ -31,8 +41,7 @@ function buildControls() {
 		labelString:
 			'for a <strong>custom palette</strong>, enter a url from <a href="http://coolors.co">coolors.co</a>: ',
 		onPaletteUpdate: (p) => {
-			palette = p
-			makeCircles()
+			paletteCurrent = p
 			redraw()
 		},
 	})
@@ -50,7 +59,7 @@ function makeCircles() {
 		multMax: 0.1,
 		space: 5,
 		build: false,
-		stepSize: 5,
+		stepSize: 10,
 		attemptsEachStep: 200,
 	})
 

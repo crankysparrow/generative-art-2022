@@ -1,11 +1,11 @@
 let m, b, c1, c2
 
-window.addEventListener('unload', console.clear)
-if (module.hot) {
-	module.hot.dispose(() => {
-		window.location.reload()
-	})
-}
+// window.addEventListener('unload', console.clear)
+// if (module.hot) {
+// 	module.hot.dispose(() => {
+// 		window.location.reload()
+// 	})
+// }
 
 function setup() {
 	createCanvas(window.innerWidth, window.innerHeight)

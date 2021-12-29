@@ -1,5 +1,9 @@
 import { paletteFromUrl } from './utils.js'
-import '../../styles/components/controls.scss'
+// import * as classes from '../../styles/components/controls.module.scss'
+import cssText from 'bundle-text:../../styles/components/controls.scss'
+let style = document.createElement('style')
+style.textContent = cssText
+document.body.appendChild(style)
 
 export class Controls {
 	constructor() {
