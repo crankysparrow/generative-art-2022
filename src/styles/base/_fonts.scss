@@ -6,6 +6,7 @@
 
 html {
 	font-family: $font;
+	line-height: 1.6;
 }
 
 h1,
@@ -16,9 +17,37 @@ h5,
 p,
 ul,
 ol {
+	margin: 0;
 	margin-bottom: 0.5rem;
+	transition: all 200ms;
 }
 
-h1.blu {
-	// color: $blue;
+h1,
+.h1 {
+	font-size: 1.6rem;
+	font-weight: 300;
+}
+
+h2,
+.h2 {
+	font-size: 1.4rem;
+	font-weight: 300;
+}
+
+h3,
+.h3 {
+	font-size: 1.2rem;
+	font-weight: 300;
+}
+
+h4,
+.h4 {
+	font-size: 1rem;
+	font-weight: 300;
+}
+
+h5,
+.h5 {
+	font-size: 0.64rem;
+	text-transform: uppercase;
 }

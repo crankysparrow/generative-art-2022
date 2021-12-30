@@ -9,6 +9,7 @@ export class Controls {
 	constructor() {
 		this.shown = this.shownFromStorage() ?? true
 		this.container = this.buildContainer()
+		this.count = 0
 	}
 
 	shownFromStorage() {
@@ -52,13 +53,23 @@ export class Controls {
 		return c
 	}
 
-	createInput({ id, labelString, onChange }) {
-		let inpDiv = createDiv().parent(this.container).class('input-container')
+	addSection({ id = '', labelString }) {
+		this.count++
+		let secDiv = createDiv().parent(this.container).class('section').attribute('id', id)
+		if (labelString) {
+			let title = createElement('h4', labelString).class('section-title').parent(secDiv)
+		}
 
-		let lab = createElement('label', labelString)
-			.style('display', 'block')
-			.parent(inpDiv)
-			.attribute('for', id)
+		let d = secDiv
+		return d
+	}
+
+	createInput({ id, labelString, onChange, parent = this.container }) {
+		this.count++
+
+		let inpDiv = createDiv().parent(parent).class('input-container')
+
+		let lab = createElement('label', labelString).style('display', 'block').parent(inpDiv).attribute('for', id)
 		let inp = createInput('').parent(inpDiv).attribute('id', id)
 		let errorEl = createSpan('').class('error-label').parent(inpDiv)
 
@@ -86,27 +97,53 @@ export class Controls {
 		return inputItems
 	}
 
-	createBtn({ onClick, labelString }) {
-		let d = createDiv().parent(this.container).class('btn-container')
-		let btn = createButton(labelString).class('controls-btn').parent(d)
-
+	btn({ onClick, labelString, parent }) {
+		this.count++
+		let btn = createButton(labelString).class('controls-btn').parent(parent)
 		btn.elt.addEventListener('click', onClick)
-
 		return btn
 	}
 
-	createSlider({ id, labelString, onChange, min, max, step = 1, val }) {
-		val = val ?? floor((max - min) / 2 + min)
-		let d = createDiv().parent(this.container).class('slider-container')
-		let s = createSlider(min, max, val, step).parent(d).attribute('id', id)
-		let l = createElement('label', labelString).parent(d).attribute('for', id)
-		let sp = createSpan(val).class('slider-val').parent(l)
+	createBtn({ onClick, labelString, parent = this.container }) {
+		let d = createDiv().parent(parent).class('btn-container')
+		let btn = this.btn({ onClick, labelString, parent: d })
+		return btn
+	}
 
-		s.input((e) => {
-			sp.html(s.value())
+	createBtnSet(btns, parent = this.container) {
+		let d = createDiv().parent(parent).class('btn-container')
+		let btnsOutput = []
+		btns.forEach((btn) => {
+			btn.parent = d
+			btnsOutput.push(this.btn(btn))
 		})
 
-		return { el: s }
+		return btnsOutput
+	}
+
+	createText({ text, parent = this.container }) {
+		let d = createDiv(text).parent(parent).class('text')
+		return d
+	}
+
+	createSlider({ id, labelString, onChange, min, max, step = 1, val, parent = this.container }) {
+		this.count++
+		val = val ?? floor((max - min) / 2 + min)
+		id = id ?? `controls-${this.count}`
+		let d = createDiv().parent(parent).class('slider-container')
+		let l = createElement('label').parent(d).attribute('for', id)
+		let sp1 = createSpan(labelString).class('label-text').parent(l)
+		let s = createSlider(min, max, val, step).parent(l).attribute('id', id)
+		let sp2 = createSpan(val).class('slider-val').parent(l)
+
+		s.input((e) => {
+			sp2.html(s.value())
+			if (onChange) {
+				onChange(e)
+			}
+		})
+
+		return s
 	}
 
 	createPaletteInput({ id = 'urlinput', labelString = 'custom palette: ', onPaletteUpdate }) {
@@ -127,5 +164,22 @@ export class Controls {
 		let paletteInput = this.createInput({ id, labelString, onChange: urlInputHandler })
 
 		return paletteInput
+	}
+
+	createSelect({ id, labelString, options, useOptionsIndex = false, selected, onChange, parent = this.container }) {
+		this.count++
+		id = id ?? `controls-sel-${this.count}`
+		let sDiv = createDiv().style('display', 'flex').parent(parent).class('select-container')
+		let lab = createElement('label', labelString).parent(sDiv).attribute('for', id)
+		let sel = createSelect().parent(sDiv).attribute('id', id)
+
+		for (let i = 0; i < options.length; i++) {
+			sel.option(useOptionsIndex ? i : options[i])
+		}
+
+		if (selected) sel.selected(selected)
+		sel.changed(onChange)
+
+		return sel
 	}
 }
