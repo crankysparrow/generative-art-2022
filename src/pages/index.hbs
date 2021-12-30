@@ -1,0 +1,18 @@
+---
+layout: normal.hbs
+---
+<ul>
+	
+	{{#each collections.experiment}}
+		<li>
+			<a href={{this.url}}>
+				{{#if this.data.title}} 
+					{{ this.data.title }}
+				{{else}}
+					{{this.url}}
+				{{/if}}
+			</a>
+				{{ formatDate this.date }}
+	{{/each}}
+
+</ul>

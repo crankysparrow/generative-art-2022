@@ -86,6 +86,29 @@ export class Controls {
 		return inputItems
 	}
 
+	createBtn({ onClick, labelString }) {
+		let d = createDiv().parent(this.container).class('btn-container')
+		let btn = createButton(labelString).class('controls-btn').parent(d)
+
+		btn.elt.addEventListener('click', onClick)
+
+		return btn
+	}
+
+	createSlider({ id, labelString, onChange, min, max, step = 1, val }) {
+		val = val ?? floor((max - min) / 2 + min)
+		let d = createDiv().parent(this.container).class('slider-container')
+		let s = createSlider(min, max, val, step).parent(d).attribute('id', id)
+		let l = createElement('label', labelString).parent(d).attribute('for', id)
+		let sp = createSpan(val).class('slider-val').parent(l)
+
+		s.input((e) => {
+			sp.html(s.value())
+		})
+
+		return { el: s }
+	}
+
 	createPaletteInput({ id = 'urlinput', labelString = 'custom palette: ', onPaletteUpdate }) {
 		function urlInputHandler(e) {
 			let v = e.target.value

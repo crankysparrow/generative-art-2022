@@ -1,9 +1,0 @@
-extends ../layouts/normal.pug
-
-block content 
-	h1 Experiments
-
-	ul
-		each e in collections.experiment
-			li= e.date + ' ' + e.url
-			| #{Object.keys(e)}
