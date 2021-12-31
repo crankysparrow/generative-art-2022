@@ -12,16 +12,21 @@ let m,
 	alphaSlider,
 	btns,
 	btns2,
-	paletteSelect,
+	colorSelect,
 	previewLayer,
 	previewLayerOpts,
 	previewStatus,
-	randomBtn
+	randomBtn,
+	mode,
+	modeSelect,
+	paletteSelect
 let layers = []
 window.layers = layers
 let urls = [
 	'https://coolors.co/d9f0ff-a3d5ff-83c9f4-6f73d2-7681b3',
 	'https://coolors.co/1a535c-4ecdc4-f7fff7-fbb5b1-ff6b6b',
+	'https://coolors.co/b38cb4-b7918c-c5a48a-ddc67b-f8f272',
+	'https://coolors.co/4059ad-6b9ac4-97d8c4-eff2f1-f4b942',
 ]
 palette = paletteFromUrl(urls[1])
 
@@ -29,15 +34,35 @@ function setup() {
 	createCanvas(window.innerWidth, window.innerHeight)
 	noFill()
 	m = min(width, height) * 0.8
+	mode = 'polygons'
 	makeControls()
 	// layers.push(layer({}))
 	prettyRandom()
+	frameRate(1)
 }
 
-function randomize() {
+function prettyRandomize(radius) {
+	radius = radius ?? random(m * 0.41, m * 0.01)
+	let sides = radius > m * 0.25 ? random([3, 4]) : random([3, 4, 5])
+	layers.push(
+		layer({
+			radius,
+			sides,
+			n: sides > 3 ? random(2, 100) : random(10, 200),
+			alph: radius > m * 0.25 ? random(30, 50) : random(50, 100),
+			rotation: radius > m * 0.25 ? random(0.001, 1) : random(0.8, 1.5),
+		})
+	)
+}
+
+function randomize(n, pretty = false) {
 	let i = 0
-	while (i < 10) {
-		layers.push(layer({}))
+	while (i < n) {
+		if (pretty) {
+			prettyRandomize()
+		} else {
+			layers.push(layer({}))
+		}
 		i++
 	}
 }
@@ -54,7 +79,8 @@ function previewIfActive() {
 }
 
 function preview(e) {
-	let paletteVal = paletteSelect.value()
+	let paletteVal = colorSelect.el.value()
+	mode = modeSelect.el.value()
 
 	previewLayerOpts = {
 		sides: sidesSlider.value(),
@@ -79,7 +105,9 @@ function addLayer() {
 function draw() {
 	background(20)
 	translate(width / 2, height / 2)
-
+	if (modeSelect) {
+		mode = modeSelect.el.value()
+	}
 	layers.forEach((l) => shapesss(l))
 
 	if (previewLayer) {
@@ -126,7 +154,11 @@ function shapesss({ rotation, radius, sides = 5, n = 4, col, alph = 100, initial
 		for (let i = 0; i <= circleSides; i++) {
 			let x = cos(angle * i) * radius
 			let y = sin(angle * i) * radius
-			vertex(x, y)
+			if (mode == 'polygons') {
+				vertex(x, y)
+			} else {
+				line(0, 0, x, y)
+			}
 		}
 		endShape(CLOSE)
 		i++
@@ -136,27 +168,13 @@ function shapesss({ rotation, radius, sides = 5, n = 4, col, alph = 100, initial
 
 function prettyRandom() {
 	layers = []
-	// let radius = m * 0.5
-	// let rMin = m * 0.03
 	let i = 0.41
 
 	while (i > 0.01) {
 		let radius = m * i
-		let sides = radius > m * 0.25 ? random([3, 4]) : random([3, 4, 5])
-		layers.push(
-			layer({
-				radius,
-				sides,
-				// n: radius > m * 0.25 ? random(10, 200) : random(2, 100),
-				n: sides > 3 ? random(2, 100) : random(10, 200),
-				alph: radius > m * 0.25 ? random(30, 50) : random(50, 100),
-				rotation: radius > m * 0.25 ? random(0.001, 1) : random(0.8, 1.5),
-			})
-		)
+		prettyRandomize(radius)
 		i -= 0.08
 	}
-
-	console.log(layers)
 }
 
 window.addEventListener('keypress', (e) => {
@@ -167,17 +185,19 @@ window.addEventListener('keypress', (e) => {
 
 function makeControls() {
 	controls = new Controls()
-	addLayerSection = controls.addSection({ labelString: 'new layer settings' })
+	let layerPanel = controls.addPanel({ titleString: 'add layers' })
+	let layerPanelOpts = createDiv().parent(layerPanel)
+	let generalPanel = controls.addPanel({ titleString: 'general settings' })
 	radSlider = controls.createSlider({
 		id: 'radius',
 		labelString: 'radius',
 		min: floor(m * 0.01),
 		max: floor(m * 0.6),
-		parent: addLayerSection,
+		parent: layerPanelOpts,
 		onChange: previewIfActive,
 	})
 	sidesSlider = controls.createSlider({
-		parent: addLayerSection,
+		parent: layerPanelOpts,
 		labelString: 'numSides',
 		min: 3,
 		max: 7,
@@ -185,7 +205,7 @@ function makeControls() {
 		onChange: previewIfActive,
 	})
 	nSlider = controls.createSlider({
-		parent: addLayerSection,
+		parent: layerPanelOpts,
 		labelString: 'n',
 		min: 1,
 		max: 200,
@@ -193,7 +213,7 @@ function makeControls() {
 		onChange: previewIfActive,
 	})
 	rotationSlider = controls.createSlider({
-		parent: addLayerSection,
+		parent: layerPanelOpts,
 		labelString: 'rotation',
 		min: 0.2,
 		max: 100,
@@ -201,34 +221,74 @@ function makeControls() {
 		onChange: previewIfActive,
 	})
 	alphaSlider = controls.createSlider({
-		parent: addLayerSection,
+		parent: layerPanelOpts,
 		labelString: 'alpha',
 		min: 1,
 		max: 100,
 		step: 1,
 		onChange: previewIfActive,
 	})
+
 	paletteSelect = controls.createSelect({
 		id: 'palette-sel',
-		labelString: 'color',
-		options: [...palette, 'random'],
-		selected: 'random',
+		labelString: 'palette',
+		options: urls,
+		useOptionsIndex: true,
+		selected: 1,
+		parent: generalPanel,
+		onChange: (e) => {
+			colorSelect.container.remove()
+			palette = paletteFromUrl(urls[paletteSelect.el.value()])
+			colorSelect = newColorSelect()
+			layers.forEach((l) => {
+				l.col = random(palette)
+			})
+		},
+	})
+	colorSelect = newColorSelect()
+
+	modeSelect = controls.createSelect({
+		id: 'mode-sel',
+		labelString: 'mode',
+		options: ['polygons', 'lines'],
+		selected: mode,
 		onChange: previewIfActive,
-		parent: addLayerSection,
+		parent: generalPanel,
 	})
 
-	previewStatus = createDiv('preview: inactive').parent(addLayerSection).style('text-align', 'right')
+	function newColorSelect() {
+		return controls.createSelect({
+			id: 'color-sel',
+			labelString: 'color',
+			options: [...palette, 'random'],
+			selected: 'random',
+			onChange: previewIfActive,
+			parent: layerPanelOpts,
+		})
+	}
 
-	btns = controls.createBtnSet([
-		{ labelString: 'preview layer', onClick: preview },
-		{ labelString: 'add layer', onClick: addLayer },
-	])
-	btns2 = controls.createBtnSet([
-		{ labelString: 'add 10 random', onClick: randomize },
-		{ labelString: 'draw pretty random', onClick: prettyRandom },
-		{ labelString: 'clear', onClick: clear },
-		{ labelString: 'save', onClick: () => saveCanvas() },
-	])
+	let layerBtnContainer = createDiv().parent(layerPanel)
+	previewStatus = createDiv('preview: inactive').parent(layerBtnContainer).style('text-align', 'right')
+
+	btns = controls.createBtnSet({
+		btns: [
+			{ labelString: 'preview layer', onClick: preview },
+			{ labelString: 'add layer with current settings', onClick: addLayer },
+			{ labelString: 'add 5 random', onClick: () => randomize(5) },
+			{ labelString: 'add 1 random', onClick: () => randomize(1) },
+			{ labelString: 'add pretty random', onClick: () => randomize(1, true) },
+		],
+		parent: layerBtnContainer,
+	})
+	btns2 = controls.createBtnSet({
+		btns: [
+			{ labelString: 'clear', onClick: clear },
+			{ labelString: 'save', onClick: () => saveCanvas() },
+			{ labelString: 'clear & randomize with pretty settings', onClick: prettyRandom },
+		],
+		// style: { 'margin-top': '5px', 'border-top': '1px solid' },
+		className: 'break',
+	})
 }
 
 window.setup = setup

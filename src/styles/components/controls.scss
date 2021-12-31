@@ -78,7 +78,7 @@
 		border-top: 1px solid $darkmid;
 		padding-bottom: 2px;
 		padding-top: 2px;
-		&:nth-child(2) {
+		&:nth-child(1) {
 			border-top: 0;
 		}
 		label {
@@ -107,6 +107,9 @@
 		select {
 			margin-left: 5px;
 		}
+		&:nth-child(1) {
+			border-top: 0;
+		}
 	}
 
 	select {
@@ -118,7 +121,21 @@
 
 	.btn-container {
 		display: flex;
-		justify-content: flex-end;
+		position: relative;
+		justify-content: end;
+		flex-wrap: wrap;
+		&.break {
+			padding-top: 8px;
+			&:before {
+				position: absolute;
+				content: '';
+				width: calc(100% + 1rem);
+				left: -0.5rem;
+				top: 0;
+				height: 1px;
+				background: $darkmid;
+			}
+		}
 		button {
 			margin-left: 5px;
 			margin-top: 3px;
@@ -195,6 +212,23 @@
 		&:focus {
 			outline: 2px solid $lightgray;
 		}
+	}
+}
+
+.custom-controls .tabs-container {
+	button {
+		margin-right: 3px;
+		&.active {
+			background-color: $dark3;
+		}
+	}
+}
+.custom-controls .panel {
+	display: none;
+	background: $dark3;
+	padding: 3px 5px;
+	&.active {
+		display: block;
 	}
 }
 
