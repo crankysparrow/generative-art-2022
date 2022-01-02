@@ -14,4 +14,14 @@ button,
 		background-color: $cadet;
 		font-weight: 700;
 	}
+
+	&:focus {
+		outline: 2px solid $spring;
+	}
+	&:focus:not(:focus-visible) {
+		outline: none;
+	}
+	&:focus-visible {
+		outline: 2px solid $spring;
+	}
 }

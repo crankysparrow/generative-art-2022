@@ -31,7 +31,7 @@ function setup() {
 	createP('<strong>[ 1, 2, 3 ]</strong>: shape style').parent(content)
 	createP('<strong>arrow right/left</strong>: shape size').parent(content)
 	createP('<strong>arrow up/down</strong>: alpha').parent(content)
-	tip = new Tooltip({ tipContent: content, titleString: 'controls' })
+	tip = new Tooltip({ tipContentBlock: content, titleString: 'controls' })
 }
 
 function palette() {
