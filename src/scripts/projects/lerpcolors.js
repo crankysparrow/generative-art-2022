@@ -1,4 +1,4 @@
-import lerpColorByHue from '../utils/lerpColorHue.js'
+import lerpColorByHue from '../utils/lerpColorByHue.js'
 
 function setup() {
 	createCanvas(window.innerWidth, window.innerHeight)
@@ -13,7 +13,7 @@ function draw() {
 	strokeWeight(size + 5)
 	noFill()
 	for (let i = 0; i < 100; i++) {
-		let col = lerpColorByHue(c1, c2, i, false)
+		let col = lerpColorByHue(c1, c2, i / 100, false)
 		stroke(col)
 		line(size * i, 0, size * i, height)
 	}

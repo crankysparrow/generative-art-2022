@@ -1,22 +1,27 @@
 import { Tooltip } from '../utils/Tooltip.js'
+import lerpColorByHue from '../utils/lerpColorByHue.js'
 
-let diag, g, tileSize, p, tip
+let diag, g, p, tip
 
 let settings = {
 	alphaVal: 1,
-	strokeRange: 4,
+	strokeRange: 3,
 	alphaToggle: true,
-	hueVal1: 70,
-	hueVal2: 100,
-	steps: 30,
-	saturationToggle: true,
+	hueVal1: 0,
+	hueVal2: 0,
+	steps: 40,
+	hueClockwise: true,
+	tileSize: 100,
+	reflection: 'xy',
 }
 
 function setup() {
 	createCanvas(window.innerWidth, window.innerHeight)
-	colorMode(HSB, 100)
+	colorMode(HSB)
 
-	tileSize = 100
+	settings.hueVal1 = floor(random(360))
+	settings.hueVal2 = floor(random(360))
+
 	p = createVector(random(), random())
 	noLoop()
 
@@ -25,16 +30,20 @@ function setup() {
 		btnName: 'keys',
 		tipContent: [
 			['q', 'save'],
-			['ArrowUp', 'alphaMax+'],
-			['ArrowDown', 'alphaMax-'],
-			['ArrowRight', 'strokeRange+'],
-			['ArrowLeft', 'strokeRange-'],
+			['ArrowUp', 'alphaVal+'],
+			['ArrowDown', 'alphaVal-'],
+			['ArrowRight', 'tileSize+'],
+			['ArrowLeft', 'tileSize-'],
+			['s', 'strokeRange+'],
+			['d', 'strokeRange-'],
 			['a', 'alpha toggle'],
-			['h', 'hueVal1 cycle'],
-			['j', 'hueVal2 cycle'],
-			['s', 'saturationToggle'],
+			['h', 'hueVal1+'],
+			['n', 'hueVal1-'],
+			['j', 'hueVal2+'],
+			['m', 'hueVal2-'],
+			['b', 'toggle hueRotateClockwise'],
 			['1-4', 'steps * 10'],
-			['r', 'new pattern'],
+			['w', 'new pattern'],
 		],
 		note: 'open console to view vals on change',
 	})
@@ -42,12 +51,11 @@ function setup() {
 
 function patternLine(x, y, cur, g) {
 	let d = dist(x, y, cur.x, cur.y)
-	let col1 = color(settings.hueVal1, settings.saturationToggle ? 70 : map(d, 0, diag, 30, 60), 50)
-	let col2 = color(settings.hueVal2, settings.saturationToggle ? 70 : map(d, 0, diag, 30, 60), 50)
-	let col = lerpColor(col1, col2, map(d, 0, diag, 0, 1))
-	// let col = color(map(d, 0, diag, hueVal, hueVal + hueRange), saturationToggle ? 70 : map(d, 0, diag, 30, 60), 50)
+	let col1 = color(settings.hueVal1, random(50, 100), 50)
+	let col2 = color(settings.hueVal2, random(50, 100), 50)
+	let col = lerpColorByHue(col1, col2, map(d, 0, diag, 0, 1), settings.hueClockwise)
 	if (settings.alphaToggle) {
-		col.setAlpha(map(d, 0, diag, 0, 100 * settings.alphaVal))
+		col.setAlpha(map(d, 0, diag, 0, settings.alphaVal))
 	} else {
 		col.setAlpha(100 * settings.alphaVal)
 	}
@@ -64,18 +72,18 @@ function patternLine(x, y, cur, g) {
 }
 
 function createTile() {
-	let px = p.x * tileSize
-	let py = p.y * tileSize
-	diag = dist(0, 0, tileSize, tileSize)
+	let px = p.x * settings.tileSize
+	let py = p.y * settings.tileSize
+	diag = dist(0, 0, settings.tileSize, settings.tileSize)
 
-	let g = createGraphics(tileSize, tileSize)
+	let g = createGraphics(settings.tileSize, settings.tileSize)
 	let cur = createVector(px, py)
 	let i = 0
-	for (let pos = 0; pos < tileSize; pos += tileSize / settings.steps) {
+	for (let pos = 0; pos < settings.tileSize; pos += settings.tileSize / settings.steps) {
 		patternLine(pos, 0, cur, g)
-		patternLine(pos, tileSize, cur, g)
+		patternLine(pos, settings.tileSize, cur, g)
 		patternLine(0, pos, cur, g)
-		patternLine(tileSize, pos, cur, g)
+		patternLine(settings.tileSize, pos, cur, g)
 		i++
 	}
 
@@ -89,20 +97,20 @@ function draw() {
 
 	g = createTile()
 	let j = 0
-	for (let y = 0; y < height; y += tileSize) {
+	for (let y = 0; y < height; y += settings.tileSize) {
 		let i = 0
-		for (let x = 0; x < width; x += tileSize) {
+		for (let x = 0; x < width; x += settings.tileSize) {
 			push()
 			translate(x, y)
-			if (i % 2 == 0) {
+			if ((settings.reflection == 'xy' || settings.reflection == 'y') && i % 2 == 0) {
 				scale(-1, 1)
-				translate(-tileSize, 0)
+				translate(-settings.tileSize, 0)
 			}
-			if (j % 2 == 0) {
+			if ((settings.reflection == 'xy' || settings.reflection == 'x') && j % 2 == 0) {
 				scale(1, -1)
-				translate(0, -tileSize)
+				translate(0, -settings.tileSize)
 			}
-			image(g, 0, 0, tileSize)
+			image(g, 0, 0, settings.tileSize)
 			pop()
 			i++
 		}
@@ -117,34 +125,38 @@ window.keyPressed = () => {
 	if (key === 'q') {
 		saveCanvas('gridpatterns')
 		return
-	} else if (key === 'r') {
+	} else if (key === 'w') {
 		p = createVector(random(), random())
 		redraw()
 		return
 	}
 	if (key == 'ArrowDown') {
-		settings.alphaMax -= 0.05
+		settings.alphaVal -= 0.05
 	} else if (key == 'ArrowUp') {
-		settings.alphaMax += 0.05
+		settings.alphaVal += 0.05
 	} else if (key == 'ArrowRight') {
-		settings.strokeRange += 1
+		settings.tileSize += 5
 	} else if (key == 'ArrowLeft') {
+		settings.tileSize -= 5
+	} else if (key === 's') {
+		settings.strokeRange += 1
+	} else if (key === 'd') {
 		settings.strokeRange -= 1
 	} else if (key === 'a') {
 		settings.alphaToggle = !settings.alphaToggle
-		settings.alphaMax = 1
+		settings.alphaVal = 1
 	} else if (key === 'h') {
 		settings.hueVal1 += 5
-		settings.hueVal1 %= 100
+		settings.hueVal1 %= 365
 	} else if (key === 'j') {
 		settings.hueVal2 += 5
-		settings.hueVal2 %= 100
+		settings.hueVal2 %= 365
 	} else if (key === 'n') {
-		settings.hueVal1 = settings.hueVal1 < 5 ? 100 : settings.hueVal1 - 5
+		settings.hueVal1 = settings.hueVal1 < 5 ? 360 : settings.hueVal1 - 5
 	} else if (key === 'm') {
-		settings.hueVal2 = settings.hueVal2 < 5 ? 100 : settings.hueVal2 - 5
-	} else if (key == 's') {
-		settings.saturationToggle = !settings.saturationToggle
+		settings.hueVal2 = settings.hueVal2 < 5 ? 360 : settings.hueVal2 - 5
+	} else if (key === 'b') {
+		settings.hueClockwise = !settings.hueClockwise
 	} else if (key === '1') {
 		settings.steps = 10
 	} else if (key == '2') {
@@ -153,6 +165,18 @@ window.keyPressed = () => {
 		settings.steps = 30
 	} else if (key == '4') {
 		settings.steps = 40
+	} else if (key == '5') {
+		settings.steps = 50
+	} else if (key == '6') {
+		settings.steps = 60
+	} else if (key == '7') {
+		settings.steps = 70
+	} else if (key == '8') {
+		settings.steps = 80
+	} else if (key == '9') {
+		settings.steps = 90
+	} else if (key == '0') {
+		settings.steps = 100
 	}
 
 	redraw()
