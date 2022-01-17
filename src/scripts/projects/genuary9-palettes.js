@@ -82,9 +82,42 @@ let anotherOne = function () {
 		house: random(['#27A58C', '#97230C']),
 		win2: color(240, 167, 102),
 		win: color(240, 187, 132),
-		// lines: color(59, 33, 30),
 		lines: color('#581620'),
 		out: color('#E4B363'),
+	}
+}
+
+let sunshiney = function () {
+	return {
+		house: random(['#571f4e', '#8c86aa']),
+		accent: random(['#27a58c', '#f9dc5c', '#81559b']),
+		win2: color(240, 167, 102),
+		win: color(240, 187, 132),
+		lines: color('#571f4e'),
+		out: random([color('#f0544f'), color('#952327')]),
+	}
+}
+
+let autumn = function () {
+	return {
+		//'#ffd5c2',
+		house: random(['#c8553d', '#f28f3b', '#694d75', '#331832']),
+		accent: random(['#ffd95c', '#588b8b']),
+		win2: color(255, 241, 194),
+		win: color(255, 251, 184),
+		lines: color('#332e3c'),
+		out: color('#fdd692'),
+	}
+}
+
+let autumn2 = function () {
+	return {
+		house: random(['#c8553d', '#f28f3b', '#331832']),
+		accent: random(['#ffd95c', '#588b8b']),
+		win2: color(255, 241, 194),
+		win: color(255, 251, 184),
+		lines: color('#332e3c'),
+		out: random([color('#694d75'), color('#754f44')]),
 	}
 }
 
@@ -93,26 +126,41 @@ let anotherOne = function () {
 export const paletteOptions = () => {
 	// return random([[brightStuff], [darkLight, lightDark], [midDark, darkDark]])
 	return random([
-		// {
-		// 	palettes: [greenBlue],
-		// 	bg: '#E8F2CF',
-		// },
+		{
+			palettes: [greenBlue],
+			bg: '#E8F2CF',
+		},
+		{
+			palettes: [anotherOne, sunshiney],
+			bg: '#190933',
+		},
 		{
 			palettes: [anotherOne],
 			bg: '#190933',
 		},
-		// {
-		// 	palettes: [brightStuff],
-		// },
-		// {
-		// 	palettes: [darkLight, lightDark],
-		// },
-		// {
-		// 	palettes: [midDark, darkDark],
-		// },
-		// {
-		// 	palettes: [purpley],
-		// 	bg: '#CAE1E2',
-		// },
+		{
+			palettes: [sunshiney],
+			bg: '#f4fffd',
+		},
+		{
+			palettes: [autumn, autumn2],
+			bg: color(255, 251, 214),
+		},
+		{
+			palettes: [brightStuff],
+			bg: '#e6e1d5',
+		},
+		{
+			palettes: [darkLight, lightDark],
+			bg: '#e6e1d5',
+		},
+		{
+			palettes: [midDark, darkDark],
+			bg: '#e6e1d5',
+		},
+		{
+			palettes: [purpley],
+			bg: '#CAE1E2',
+		},
 	])
 }

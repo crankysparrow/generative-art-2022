@@ -11,6 +11,7 @@ export class AllTheCircles {
 		height,
 		space,
 		overlapEdges = false,
+		spaceFromEdge = 20,
 		build = true,
 		attemptsEachStep = 1000,
 		stepSize = 2,
@@ -26,6 +27,7 @@ export class AllTheCircles {
 		this.overlapEdges = overlapEdges
 		this.attemptsEachStep = attemptsEachStep
 		this.stepSize = stepSize / 100
+		this.spaceFromEdge = spaceFromEdge
 
 		if (build) {
 			this.circleTime()
@@ -47,7 +49,8 @@ export class AllTheCircles {
 				let c = new Circle(
 					Math.floor(random(this.width)),
 					Math.floor(random(this.height)),
-					currentSize
+					currentSize,
+					this.circles.length
 				)
 				if (this.checkOverlap(c)) {
 					i++
@@ -62,14 +65,60 @@ export class AllTheCircles {
 		console.log({ timesTried, length: this.circles.length })
 	}
 
-	newCircle(size, attempts = 0, log = false) {
+	circleTimeOne(index) {
+		let timesTried = 0
+		let sub = 0
+		while (sub < 1) {
+			let i = 0
+			let multiplier = this.multMax - this.diff * easeOutCubic(sub)
+			let currentSize = floor(this.size * multiplier)
+
+			while (i < this.attemptsEachStep) {
+				timesTried++
+				let c = new Circle(
+					Math.floor(random(this.width)),
+					Math.floor(random(this.height)),
+					currentSize,
+					index ? index : this.circles.length
+				)
+
+				if (this.checkOverlap(c)) {
+					i++
+				} else {
+					this.circles.push(c)
+					return c
+				}
+			}
+
+			sub += this.stepSize
+		}
+	}
+
+	remove(circleToRemove) {
+		let index = circleToRemove.index
+		this.circles.splice(index, 1)
+		this.updateIndex()
+	}
+
+	updateIndex() {
+		for (let i = 0; i < this.circles.length; i++) {
+			this.circles[i].index = i
+		}
+	}
+
+	newCircle(size, attempts = 0, log = false, index) {
 		if (attempts > 10) {
 			if (log) {
 				console.log('size: ' + size + ' give up')
 			}
 			return
 		}
-		let c = new Circle(Math.floor(random(this.width)), Math.floor(random(this.height)), size)
+		let c = new Circle(
+			Math.floor(random(this.width)),
+			Math.floor(random(this.height)),
+			size,
+			index ? index : this.circles.length
+		)
 		if (this.checkOverlap(c)) {
 			attempts++
 			this.newCircle(size, attempts)
@@ -91,6 +140,17 @@ export class AllTheCircles {
 		) {
 			return true
 		}
+
+		if (
+			this.overlapEdges &&
+			(newCircle.x < this.spaceFromEdge ||
+				newCircle.x > this.width - this.spaceFromEdge ||
+				newCircle.y < this.spaceFromEdge ||
+				newCircle.y > this.height - this.spaceFromEdge)
+		) {
+			return true
+		}
+
 		for (let i = 0; i < this.circles.length; i++) {
 			let c = this.circles[i]
 			let d = dist(newCircle.x, newCircle.y, c.x, c.y)
@@ -103,9 +163,10 @@ export class AllTheCircles {
 }
 
 class Circle {
-	constructor(x, y, d) {
+	constructor(x, y, d, index) {
 		this.x = x
 		this.y = y
 		this.d = d
+		this.index = index
 	}
 }
