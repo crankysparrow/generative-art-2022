@@ -14,7 +14,7 @@ function setupExperiment() {
 	let arms = 10
 	let spirals = []
 	let j = 0
-	let repeats = floor(random(5, 10))
+	let repeats = floor(random(3, 8))
 
 	let palette = ['#307351', '#70163c', '#e5d352', '#2e0f15', '#d9e76c']
 	let step = TWO_PI / arms
@@ -92,6 +92,7 @@ function makeControls() {
 		id: 'options-sel',
 		labelString: 'mode',
 		options: stuff.options,
+		selected: stuff.options[2],
 		onChange: (e) => {
 			MODE = optionSel.el.value()
 			setupByMode()

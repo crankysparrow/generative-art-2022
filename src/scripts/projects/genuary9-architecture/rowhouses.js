@@ -1,4 +1,4 @@
-import { paletteOptions } from './genuary9-palettes'
+import { paletteOptions } from './palettes'
 let palette
 
 function setup() {

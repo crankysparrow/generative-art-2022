@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "run-p bs watch",
 		"watch": "run-p watch:parcel watch:eleventy",
-		"watch:parcel": "parcel watch src/scripts/*.js src/scripts/projects/*/*.js src/styles/main.scss --dist-dir _site",
+		"watch:parcel": "parcel watch src/scripts/projects/*/*.js src/scripts/projects/*.js src/scripts/basics/*.js src/scripts/sound/*.js src/styles/main.scss --dist-dir _site",
 		"watch:eleventy": "npx @11ty/eleventy --watch",
 		"clean": "rm -rf _site && rm -rf .parcel-cache",
 		"bs": "browser-sync start --config bs-config.js"
