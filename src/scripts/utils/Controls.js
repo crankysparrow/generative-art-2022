@@ -111,7 +111,10 @@ export class Controls {
 
 		let inpDiv = createDiv().parent(parent).class('input-container')
 
-		let lab = createElement('label', labelString).style('display', 'block').parent(inpDiv).attribute('for', id)
+		let lab = createElement('label', labelString)
+			.style('display', 'block')
+			.parent(inpDiv)
+			.attribute('for', id)
 		let inp = createInput('').parent(inpDiv).attribute('id', id)
 		let errorEl = createSpan('').class('error-label').parent(inpDiv)
 
@@ -221,6 +224,7 @@ export class Controls {
 		labelString,
 		options,
 		useOptionsIndex = false,
+		namesAndVals = false,
 		selected,
 		onChange,
 		parent = this.container,
@@ -241,7 +245,11 @@ export class Controls {
 		let sel = createSelect().parent(sDiv).attribute('id', id)
 
 		for (let i = 0; i < options.length; i++) {
-			sel.option(useOptionsIndex ? i : options[i])
+			if (namesAndVals) {
+				sel.option(options[i].name, options[i].val)
+			} else {
+				sel.option(useOptionsIndex ? i : options[i])
+			}
 		}
 
 		if (selected) sel.selected(selected)
@@ -255,7 +263,7 @@ export class Controls {
 		id = id ?? `controls-radio-${this.count}`
 
 		let rDiv = createDiv().style('display', 'flex').parent(parent).class('radio-container')
-		let radio = createRadio().attribute('id', id).parent(rDiv)
+		let radio = createRadio().attribute('id', id).attribute('class', 'radio-opts').parent(rDiv)
 		options.forEach((opt, i) => {
 			radio.option(opt)
 		})

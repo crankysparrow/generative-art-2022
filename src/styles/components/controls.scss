@@ -263,3 +263,11 @@ button {
 		font-weight: 700;
 	}
 }
+
+.radio-opts {
+	display: flex;
+	flex-direction: row;
+	label {
+		margin-right: 0.5rem;
+	}
+}

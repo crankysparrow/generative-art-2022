@@ -38,9 +38,10 @@ function setup() {
 			options: {
 				start: m * 0.1 + (width - m) / 2,
 				end: m * 0.9 + (width - m) / 2,
-				amplitude: m * 0.2 + (height - m) / 2,
-				step: m * 0.02,
-				velocity: 0.2,
+				// amplitude: m * 0.2 + (height - m) / 2,
+				// amplitude: m * 0.2,
+				// step: m * 0.02,
+				// velocity: 0.2,
 			},
 			constructor: WavePaint,
 		},
@@ -163,12 +164,12 @@ class WaveWiggle {
 class WavePaint {
 	constructor({ velocity, amplitude, start, end, step, yMid, frameVelocity }) {
 		this.angle = 0
-		this.velocity = velocity ?? 0.2
-		this.frameVelocity = frameVelocity ?? 0.02
-		this.amplitude = amplitude ?? 100
+		this.velocity = velocity ?? random(0.1, 0.4)
+		this.frameVelocity = frameVelocity ?? random(0.02, 0.05)
+		this.amplitude = amplitude ?? random(height * 0.2, height * 0.5)
 		this.start = start ?? 0
 		this.end = end ?? width
-		this.step = step ?? 10
+		this.step = step ?? random(10, 30)
 		this.yMid = yMid ?? height / 2
 		background(255)
 	}
