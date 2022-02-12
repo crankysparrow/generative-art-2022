@@ -6,8 +6,9 @@ style.textContent = cssText
 document.body.appendChild(style)
 
 export class Controls {
-	constructor() {
+	constructor(rightSide) {
 		this.shown = this.shownFromStorage() ?? true
+		this.rightSide = rightSide
 		this.container = this.buildContainer()
 		this.count = 0
 		this.activePanel = false
@@ -25,7 +26,10 @@ export class Controls {
 	}
 
 	buildContainer() {
-		let outer = createDiv().class('custom-controls').position(0, 0)
+		console.log(this.rightSide)
+		let outer = createDiv()
+			.class('custom-controls')
+			.position(this.rightSide ? window.innerWidth - 270 : 0, 0)
 		let btn = createButton('toggle controls')
 			.class('toggle-btn')
 			.parent(outer)
