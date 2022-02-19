@@ -2,12 +2,12 @@ import { Controls } from '../utils/Controls.js'
 
 // let opts = [1, 2, 3, 4, 5, 6, 7, 8]
 let opts = [one, two, three, four, five, six, seven, eight]
-let currentFunction = one
-let duration = 6
+let currentFunction = six
+let duration = 4
 
 function setup() {
 	createCanvas(min(window.innerWidth, 500), min(window.innerHeight, 500))
-	createLoop({ duration: 6 })
+	createLoop({ duration: duration })
 
 	makeControls()
 }
@@ -465,7 +465,7 @@ function makeControls() {
 		min: 1,
 		max: 8,
 		step: 0.5,
-		val: 6,
+		val: duration,
 		onChange: () => {
 			duration = durationSlider.value()
 			doSetup()

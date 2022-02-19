@@ -8,7 +8,7 @@ function draw() {
 	background(0)
 
 	fill(255)
-	let p = easeInOutSine(map(animLoop.progress, 0, 1, 0, 2)) * width
+	let p = idkWaveThing(animLoop.progress) * width
 	circle(animLoop.progress * width, p, 10, 10)
 }
 
@@ -18,6 +18,13 @@ function easeOutCirc(x) {
 
 function easeInOutSine(x) {
 	return -(cos(Math.PI * x) - 1) / 2
+}
+
+function idkWaveThing(x) {
+	let f1 = fract(x) * fract(x)
+	let f2 = fract(-x) * fract(-x)
+
+	return (f1 + f2) * 2 - 1
 }
 
 window.setup = setup
