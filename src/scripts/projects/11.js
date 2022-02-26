@@ -1,82 +1,38 @@
 let palette = ['#0d5c63', '#fc60a8', '#ff8c42', '#93032e', '#4CB5AE']
-let palette2 = ['#3DCCC7', '#9649CB', '#0D1B1E', '#F2CEE6']
-
+let directionToDuplicateColor = 0
 let vectors = []
-
 let vx1, vx2, vy1, vy2
-
-function particlesRandom(n) {
-	for (let i = 0; i < n; i++) {
-		vectors.push(new Particle(random(width), random(height)))
-	}
-}
-
-function particlesX(n) {
-	for (let x = 0; x < n; x++) {
-		vectors.push(new Particle((width / n) * x, (height / n) * x))
-		vectors.push(new Particle((width / n) * x, height - (height / n) * x))
-	}
-}
-
-function particlesGrid(n) {
-	for (let x = 0; x < n; x++) {
-		for (let y = 0; y < n; y++) {
-			vectors.push(new Particle((width / n) * x, (height / n) * y))
-		}
-	}
-}
-
-function particlesCirclePack(r) {
-	console.log('starting circle pack function')
-	let points = []
-	let keepGoing = true
-	let attempts = 0
-	let c = 0
-
-	while (keepGoing) {
-		c++
-		let newPoint = createVector(random(r / 2, width - r), random(r / 2, height - r))
-		let validPoint = true
-
-		for (let i = 0; i < points.length; i++) {
-			if (newPoint.dist(points[i]) < r) {
-				validPoint = false
-				break
-			}
-		}
-
-		if (validPoint) {
-			points.push(newPoint)
-			attempts = 0
-		} else {
-			attempts++
-		}
-
-		if (attempts > 100) {
-			keepGoing = false
-		}
-	}
-
-	console.log(`took ${c} attempts to make ${points.length} points`)
-	return points
-}
 
 let possibles = [
 	{ vx1: 0.031, vx2: 0.042, vy1: 0.0978, vy2: 0.58 },
 	{ vx1: 0.0529, vx2: 0.044986, vy1: 0.0686, vy2: 1.121 },
 	{ vx1: 0.038, vx2: 0.07, vy1: 0.021, vy2: 1.44 },
 	{ vx1: 0.08, vx2: 0.02, vy1: 0.05, vy2: 1.24 },
+	{ vx1: 0.58, vx2: 0.01, vy1: 0.015, vy2: 1.2 },
+	{ vx1: 0.654, vx2: 0.043, vy1: -0.077, vy2: 0.552 },
+	{ vx1: 0.75, vx2: -0.015, vy1: 0.018, vy2: -0.535 },
+	{ vx1: 0.22, vx2: 0.0164, vy1: -0.014, vy2: -1.337 },
 ]
+
+let minLength = 200
+let idealLength = 300
+let meetThreshold = 5
+let circlePackRadius = 50
+let circlePackingAttempts = 20
+let lineThickness = 20
+let timesAdded = 0
+let alphaVal = 230
 
 function makeVectorCurves(startAt = 0) {
 	console.log('starting make curves function')
-	let count = 0
-	let meetThreshold = 5
+	let longest = 0
+	let shortest = idealLength + 1
 
-	while (count < 50) {
-		for (let i = startAt; i < vectors.length; i++) {
+	for (let i = startAt; i < vectors.length; i++) {
+		let count = 0
+		while (count < idealLength) {
 			if (vectors[i].done) {
-				continue
+				break
 			}
 
 			let newPoint = vectors[i].addPoint()
@@ -91,9 +47,9 @@ function makeVectorCurves(startAt = 0) {
 						(abs(floor(newPoint.x) - floor(vectors[j].points[pi].x)) < meetThreshold &&
 							abs(floor(newPoint.y) - floor(vectors[j].points[pi].y)) <
 								meetThreshold) ||
-						newPoint.x > width ||
+						newPoint.x > width - lineThickness / 2 ||
 						newPoint.x < 0 ||
-						newPoint.y > height ||
+						newPoint.y > height - lineThickness / 2 ||
 						newPoint.y < 0
 					) {
 						intersects = true
@@ -104,33 +60,61 @@ function makeVectorCurves(startAt = 0) {
 
 			if (intersects) {
 				vectors[i].done = true
-				if (vectors[i].points.length < 10) {
-					vectors.splice(i, 1)
-					i--
-				}
 			} else {
 				vectors[i].points.push(newPoint)
 			}
+			count++
 		}
-		count++
 	}
 
-	console.log(`started at ${startAt}, finished with ${vectors.length} curvy particles`)
+	vectors = vectors.filter((v, i) => {
+		if (i < startAt) {
+			return true
+		} else {
+			let len = v.points.length
+			if (len < minLength) {
+				return false
+			}
+
+			if (len > longest) {
+				longest = len
+			} else if (len < shortest) {
+				shortest = len
+			}
+		}
+
+		return true
+	})
+
+	console.log(vectors)
+	console.log(
+		`started at ${startAt}, finished with ${vectors.length} curvy particles. The longest is ${longest}. The shortest is ${shortest}`
+	)
 }
 
 function setup() {
-	createCanvas(500, 500)
-	background('#fffffa')
+	createCanvas(700, 500)
+	// background('#faf1f8')
 
+	let bgs = [color(255, 255, 250, 150), color(236, 222, 212, 150), color(252, 244, 237, 150)]
+	strokeWeight(200)
+	for (let i = 0; i < 5; i++) {
+		stroke(random(bgs))
+		line(0 - random(width), 0 - random(height), width + random(width), height + random(height))
+		line(width + random(width), height + random(height), 0 - random(width), 0 - random(height))
+		line(0 - random(width), height + random(height), width + random(width), 0 - random(height))
+		line(width + random(width), 0 - random(height), 0 - random(width), height + random(height))
+	}
 	palette = shuffle(palette)
+	directionToDuplicateColor = random([1, 2, 3, 4, 5, 6, 7])
 
-	vx1 = random(0.1, 1)
+	vx1 = random(0.1, 1.2)
 	vx2 = random(0.01, 0.08)
 	vy1 = random(0.01, 0.08)
 	vy2 = random(0.5, 1.5)
+	// ;({ vx1, vx2, vy1, vy2 } = possibles[6])
 
 	console.log({ vx1, vx2, vy1, vy2 })
-
 	let btn = createButton('add curves')
 	btn.mousePressed(drawSomeStuff)
 
@@ -138,14 +122,16 @@ function setup() {
 }
 
 function drawSomeStuff() {
+	timesAdded++
+
 	noFill()
 	strokeCap(SQUARE)
-	strokeWeight(5)
+	strokeWeight(lineThickness)
 	stroke(100, 10, 250)
 
 	let startAt = vectors.length
 
-	let ps = particlesCirclePack(15)
+	let ps = particlesCirclePack(circlePackRadius, circlePackingAttempts * timesAdded)
 	ps.forEach((p) => {
 		vectors.push(new Particle(p.x, p.y))
 	})
@@ -156,7 +142,9 @@ function drawSomeStuff() {
 		let len = vectors[i].points.length
 		beginShape()
 		// stroke(100, 10, 250, map(len, 10, 80, 150, 255))
-		stroke(palette[vectors[i].col])
+		let c = color(palette[vectors[i].col])
+		c.setAlpha(alphaVal)
+		stroke(c)
 
 		curveVertex(vectors[i].points[0].x, vectors[i].points[0].y)
 		vectors[i].points.forEach((p) => {
@@ -175,7 +163,8 @@ function draw() {
 function findForceX(x, y) {
 	// return (sin(x * vx1) + sin(y * vx2)) * -5
 	// return sin(x * vx1) - cos(y * vx2)
-	return sin(x * (1 / (width * vx1))) - cos(y * vx2)
+	// return sin(x * (1 / (width * vx1))) - cos(y * vx2)
+	return sin(x * (1 / (width * vx1))) + cos(y * vx2)
 }
 
 function findForceY(x, y) {
@@ -200,13 +189,7 @@ class Particle {
 		let forceY = findForceY(prev.x, prev.y)
 
 		if (!this.col) {
-			if (forceX > 0 && forceY > 0) {
-				this.col = 0
-			} else if (forceX < 0 && forceY < 0) {
-				this.col = 2
-			} else {
-				this.col = 3
-			}
+			this.col = getColor(forceX, forceY)
 		}
 
 		if (forceX < 1 && forceY < 1) {
@@ -278,6 +261,129 @@ class Particle {
 			this.y = y
 		} else {
 			this.done = true
+		}
+	}
+}
+
+function particlesRandom(n) {
+	for (let i = 0; i < n; i++) {
+		vectors.push(new Particle(random(width), random(height)))
+	}
+}
+
+function particlesX(n) {
+	for (let x = 0; x < n; x++) {
+		vectors.push(new Particle((width / n) * x, (height / n) * x))
+		vectors.push(new Particle((width / n) * x, height - (height / n) * x))
+	}
+}
+
+function particlesGrid(n) {
+	for (let x = 0; x < n; x++) {
+		for (let y = 0; y < n; y++) {
+			vectors.push(new Particle((width / n) * x, (height / n) * y))
+		}
+	}
+}
+
+function particlesCirclePack(r, maxAttempts = 100) {
+	console.log('starting circle pack function')
+	let points = []
+	let keepGoing = true
+	let attempts = 0
+	let c = 0
+
+	while (keepGoing) {
+		c++
+		let newPoint = createVector(random(r / 2, width - r / 2), random(r / 2, height - r / 2))
+		let validPoint = true
+
+		for (let i = 0; i < points.length; i++) {
+			if (newPoint.dist(points[i]) < r) {
+				validPoint = false
+				break
+			}
+		}
+
+		if (validPoint) {
+			points.push(newPoint)
+			attempts = 0
+		} else {
+			attempts++
+		}
+
+		if (attempts > maxAttempts) {
+			keepGoing = false
+		}
+	}
+
+	console.log(`took ${c} attempts to make ${points.length} points`)
+	return points
+}
+
+function getColor(forceX, forceY) {
+	if (directionToDuplicateColor == 1) {
+		// toward top2: y down, either x
+		if (forceX < 0 && forceY > 0) {
+			return 1
+		} else if (forceX > 0 && forceY > 0) {
+			return 2
+		} else {
+			return 3
+		}
+	} else if (directionToDuplicateColor == 2) {
+		// toward bottom2: y up, either x
+		if (forceX < 0 && forceY < 0) {
+			return 1
+		} else if (forceX > 0 && forceY < 0) {
+			return 2
+		} else {
+			return 3
+		}
+	} else if (directionToDuplicateColor == 3) {
+		// topright corner, botleft corner: y down & x up // yup & x down
+		if (forceX < 0 && forceY > 0) {
+			return 1
+		} else if (forceX > 0 && forceY < 0) {
+			return 2
+		} else {
+			return 3
+		}
+	} else if (directionToDuplicateColor == 4) {
+		// topleft, botright: y down & x down, y up & x up
+		if (forceX > 0 && forceY > 0) {
+			return 1
+		} else if (forceX < 0 && forceY < 0) {
+			return 2
+		} else {
+			return 3
+		}
+	} else if (directionToDuplicateColor == 5) {
+		// toward right2: x up, y either
+		if (forceX < 0 && forceY > 0) {
+			return 1
+		} else if (forceX < 0 && forceY < 0) {
+			return 2
+		} else {
+			return 3
+		}
+	} else if (directionToDuplicateColor == 6) {
+		if (forceX > 0 && forceY > 0) {
+			return 1
+		} else if (forceX > 0 && forceY < 0) {
+			return 2
+		} else {
+			return 3
+		}
+	} else {
+		if (forceX > 0 && forceY > 0) {
+			return 1
+		} else if (forceX > 0 && forceY < 0) {
+			return 2
+		} else if (forceX < 0 && forceY > 0) {
+			return 3
+		} else if (forceX < 0 && forceY > 0) {
+			return 4
 		}
 	}
 }
