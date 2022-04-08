@@ -15,7 +15,7 @@ function setup() {
 
 function draw() {
 	background(0)
-	three()
+	one()
 }
 
 function one() {
@@ -38,9 +38,7 @@ function two() {
 				xi * xStep,
 				yi * yStep,
 				radius,
-				(xi + yi) % 2 == 0
-					? animLoop.progress
-					: (animLoop.progress + 0.5) % 1
+				(xi + yi) % 2 == 0 ? animLoop.progress : (animLoop.progress + 0.5) % 1
 			)
 			pop()
 		}
