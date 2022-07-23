@@ -1,6 +1,6 @@
 table {
 	border-collapse: collapse;
-	width: 100%;
+	// width: 100%;
 	th[scope='row'] {
 		text-align: left;
 	}
@@ -10,4 +10,9 @@ table {
 			background-color: desaturate(lighten($paleblue, 12), 30);
 		}
 	}
+}
+
+table.main {
+	margin: 50px 5%;
+	max-width: 900px;
 }

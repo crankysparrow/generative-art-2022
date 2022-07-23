@@ -1,0 +1,31 @@
+extends ../layouts/normal.pug 
+
+block content
+	table.main
+		tr 
+			th title 
+			th date started 
+			th tags 
+		each exp in collections.experiment
+			tr
+				td
+					a(href=exp.url)=exp.data.title
+				td
+					span  !{filters.formatDate(exp.date)}
+				td
+					div.taglist 
+						each tag in exp.data.tags 
+							span=tag
+
+
+	//- 	<li>
+	//- 		<a href={{this.url}}>
+	//- 			{{#if this.data.title}} 
+	//- 				{{ this.data.title }}
+	//- 			{{else}}
+	//- 				{{this.url}}
+	//- 			{{/if}}
+	//- 		</a>
+	//- 			{{ formatDate this.date }}
+	//- 			</li>
+	//- {{/each}}

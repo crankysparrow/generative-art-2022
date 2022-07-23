@@ -4,3 +4,10 @@
 @import './base/fonts';
 @import './base/buttons';
 @import './base/tables';
+
+.taglist {
+	display: flex;
+	span {
+		margin-right: 1rem;
+	}
+}

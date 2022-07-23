@@ -7,6 +7,11 @@ module.exports = function (eleventyConfig) {
 		return DateTime.fromJSDate(dateObj).toLocaleString(DateTime.DATE_MED)
 	})
 
+	global.filters = eleventyConfig.javascriptFunctions
+	eleventyConfig.setPugOptions({
+		globals: ['filters'],
+	})
+
 	return {
 		dir: {
 			input: 'src/pages',

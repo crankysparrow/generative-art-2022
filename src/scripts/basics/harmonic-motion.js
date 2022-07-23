@@ -1,7 +1,7 @@
 import { Controls } from '../utils/Controls.js'
 
 let wave
-let options = ['wiggle', 'fronds', 'line', 'paint', 'additive']
+let options = ['wiggle', 'fronds', 'line', 'paint', 'additive', 'paintErase']
 let settings = {}
 let current
 
@@ -44,6 +44,13 @@ function setup() {
 				// velocity: 0.2,
 			},
 			constructor: WavePaint,
+		},
+		paintErase: {
+			options: {
+				start: m * 0.1 + (width - m) / 2,
+				end: m * 0.9 + (width - m) / 2,
+			},
+			constructor: WavePaintErase,
 		},
 		additive: {
 			options: {},
@@ -185,6 +192,61 @@ class WavePaint {
 		strokeWeight(1)
 		noFill()
 		let a = this.angle
+
+		push()
+		translate(0, this.yMid)
+		beginShape()
+		curveVertex(this.start, sin(a) * this.amplitude)
+		for (let x = this.start; x <= this.end; x += this.step) {
+			let y = sin(a) * this.amplitude
+			curveVertex(x, y)
+			a += this.velocity
+		}
+		curveVertex(this.end, sin(a) * this.amplitude)
+		endShape()
+		pop()
+	}
+}
+
+class WavePaintErase {
+	constructor({ velocity, amplitude, start, end, step, yMid, frameVelocity }) {
+		this.angle = 0
+		this.velocity = velocity ?? random(0.1, 0.4)
+		// this.velocity = 0.3
+		this.frameVelocity = frameVelocity ?? random(0.02, 0.05)
+		// this.frameVelocity = 0.04
+		this.amplitude = amplitude ?? random(height * 0.2, height * 0.5)
+		// this.amplitude = height * 0.2
+		this.start = start ?? 0
+		this.end = end ?? width
+		this.step = step ?? random(10, 30)
+		this.yMid = yMid ?? height / 2
+		background(255)
+		colorMode(HSB, 100, 100, 100)
+	}
+
+	easeOutQuint(num) {
+		return 1 - pow(1 - num, 5)
+	}
+
+	easeInQuint(num) {
+		return num * num * num * num * num
+	}
+
+	update() {
+		this.angle += this.frameVelocity
+	}
+
+	draw() {
+		let a = this.angle
+		let hueVal = map(sin(a), -1, 1, 10, 50)
+		let saturationPct = map((a + PI) % TWO_PI, 0, TWO_PI, 0, 1)
+		let saturationEase = this.easeInQuint(saturationPct)
+		let saturationVal = 100 * saturationEase
+
+		stroke(hueVal, saturationVal, 100)
+		strokeWeight(1)
+		noFill()
 
 		push()
 		translate(0, this.yMid)
