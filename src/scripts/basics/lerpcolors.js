@@ -7,13 +7,17 @@ function setup() {
 }
 
 function draw() {
-	let c1 = color(29, 100, 100)
-	let c2 = color(250, 10, 100)
-	let size = width / 100
+	// let c1 = color(29, 100, 100)
+	let c1 = color('#ffa200')
+	let c2 = color('#f2029a')
+	// let c2 = color(250, 10, 100)
+	let step = 10
+	let size = width / step
 	strokeWeight(size + 5)
 	noFill()
-	for (let i = 0; i < 100; i++) {
-		let col = lerpColorByHue(c1, c2, i / 100, false)
+
+	for (let i = 0; i < step; i++) {
+		let col = lerpColorByHue(c1, c2, i / step, false)
 		stroke(col)
 		line(size * i, 0, size * i, height)
 	}

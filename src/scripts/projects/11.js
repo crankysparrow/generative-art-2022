@@ -14,12 +14,12 @@ let possibles = [
 	{ vx1: 0.22, vx2: 0.0164, vy1: -0.014, vy2: -1.337 },
 ]
 
-let minLength = 200
+let minLength = 100
 let idealLength = 300
-let meetThreshold = 5
+let meetThreshold = 3
 let circlePackRadius = 50
 let circlePackingAttempts = 20
-let lineThickness = 20
+let lineThickness = 10
 let timesAdded = 0
 let alphaVal = 230
 
