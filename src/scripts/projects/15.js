@@ -1,5 +1,5 @@
 import { paletteFromUrl } from '../utils/utils.js'
-
+let usePalettes = true
 let color1, color2
 
 let paletteUrls = [
@@ -19,45 +19,32 @@ let palettes = [
 	['#e3b505', '#95190c', '#610345', '#107e7d'],
 ]
 
-let palettesOrg = [
-	{
-		light: ['#ffec51'],
-		dark: ['#ff674d'],
-		all: [('#7776bc', '#cdc7e5', '#fffbdb', '#ff674d')],
-	},
-	{
-		dark: ['#95190c', '#610345'],
-		all: ['#e3b505', '#95190c', '#610345', '#107e7d'],
-	},
-]
-
 function setup() {
 	createCanvas(window.innerWidth, window.innerHeight)
 	colorMode(HSB)
 
 	generateColors()
+	strokeCap(SQUARE)
 	noLoop()
 }
 
 const phi = (1 + Math.sqrt(5)) / 2
 
 function generateColors() {
-	// let palette = random(palettes)
-	// color1 = random(palette)
-	// let b1 = brightness(color1)
-	// color2 = random(palette.filter((p) => p !== color1))
-	// if (!color2) color2 = '#0a0a0a'
+	if (usePalettes) {
+		let palette = random(palettes)
+		color1 = random(palette)
+		let b1 = brightness(color1)
+		color2 = random(palette.filter((p) => p !== color1))
+		if (!color2) color2 = '#0a0a0a'
+	} else {
+		let h = random()
+		color1 = color(h * 360, random(20, 35), random(90, 100))
+		h += 1 / phi
+		h %= 1
 
-	let h = random()
-	color1 = color(h * 360, random(20, 35), random(90, 100))
-
-	// h += (1 / phi) * random(0.8, 1)
-	// h %= 1
-
-	h += 1 / phi
-	h %= 1
-
-	color2 = color(h * 360, 70, 25)
+		color2 = color(h * 360, 70, 25)
+	}
 }
 
 function mouseClicked() {
@@ -83,8 +70,15 @@ class Shape {
 		this.setX(random(0.25, 0.45))
 		this.setOff(random() < 0.5)
 		this.outline = random() < 0.5
+		this.strokeWeight = random([3, 4, 5, 8])
+		this.lineWeight = this.outline
+			? this.strokeWeight >= 5
+				? random([3, 4])
+				: random([3, 4, 5])
+			: random([2, 3, 4, 5, 7])
 		this.dots = false
 		this.opposite = true
+		this.needStrokeOffset = true
 
 		this.dotPosY = (this.stepY - this.sizeY) * -0.5
 		this.dotPosX = this.ptnWdth * (this.off ? 0.25 : 0.5)
@@ -120,6 +114,25 @@ class Shape {
 		}
 	}
 
+	drawLines(i) {
+		stroke(this.col)
+		strokeWeight(this.lineWeight)
+		noFill()
+
+		if (!this.off) {
+			line(this.sizeX, this.sizeY / 2, this.ptnWdth - this.sizeX, this.sizeY / 2)
+			return
+		}
+
+		if (this.lines === 'left' || this.lines === 'both') {
+			line(0, this.sizeY / 2, this.ptnWdth, this.sizeY / 2)
+		}
+
+		if (this.lines === 'right' || this.lines === 'both') {
+			line(0, this.sizeY / 2 + this.stepY / 2, this.ptnWdth, this.sizeY / 2 + this.stepY / 2)
+		}
+	}
+
 	setSizeY(sizeY) {
 		this.sizeY = sizeY
 		this.dotPosY = (this.stepY - this.sizeY) * -0.5
@@ -148,23 +161,24 @@ class Shape {
 			push()
 			translate(0, this.stepY * i)
 
-			this.setColors()
+			this.color()
 
 			this.shapeLeft()
 			if (this.opposite) this.shapeRight()
 
 			if (this.stepExtras) this.stepExtras()
 			if (this.dots) this.drawDot(i)
+			if (this.lines) this.drawLines(i)
 			pop()
 			i++
 		}
 	}
 
-	setColors() {
+	color() {
 		if (this.outline) {
 			noFill()
 			stroke(this.col)
-			strokeWeight(3)
+			strokeWeight(this.strokeWeight)
 		} else {
 			noStroke()
 			fill(this.col)
@@ -176,17 +190,28 @@ class Shape {
 	}
 
 	shapeLeft() {
-		this.drawShape(0, 0, this.sizeX, this.sizeY)
+		let x = this.needStrokeOffset && this.outline ? this.strokeWeight / 2 : 0
+		this.drawShape(x, 0, this.sizeX, this.sizeY)
 	}
 
 	shapeRight() {
-		this.drawShape(this.ptnWdth, this.off ? this.stepY / 2 : 0, -this.sizeX, this.sizeY)
+		let x =
+			this.needStrokeOffset && this.outline
+				? this.ptnWdth - this.strokeWeight / 2
+				: this.ptnWdth
+		this.drawShape(x, this.off ? this.stepY / 2 : 0, -this.sizeX, this.sizeY)
 	}
 }
 
-class ShapeRects extends Shape {
+class ShapeRect extends Shape {
 	constructor(ptnWdth, col) {
 		super(ptnWdth, col)
+
+		this.lines = this.off ? random(['left', 'right', 'both', false]) : random() < 0.5
+	}
+
+	drawShape(x, y, w, h) {
+		rect(x, y, w, h, 0, 4, 4, 0)
 	}
 }
 
@@ -318,6 +343,7 @@ class ShapeLeaf extends Shape {
 	}
 
 	drawShape(x, y, r, len) {
+		strokeCap(ROUND)
 		let p1 = x + this.c[0] * len
 		let p2 = x + this.c[1] * len
 		beginShape()
@@ -325,14 +351,53 @@ class ShapeLeaf extends Shape {
 		bezierVertex(p1, y + r, p2, y + r, x + len, y)
 		bezierVertex(p2, y - r, p1, y - r, x, y)
 		endShape()
+		strokeCap(SQUARE)
 	}
 
 	shapeLeft() {
-		this.drawShape(0, 0, this.r, this.len)
+		this.drawShape(this.strokeWeight / 2, 0, this.r, this.len - this.strokeWeight / 2)
 	}
 
 	shapeRight() {
-		this.drawShape(this.ptnWdth, this.off ? this.stepY / 2 : 0, this.r, -this.len)
+		this.drawShape(
+			this.ptnWdth - this.strokeWeight / 2,
+			this.off ? this.stepY / 2 : 0,
+			this.r,
+			-this.len + this.strokeWeight / 2
+		)
+	}
+}
+
+class ShapeBumps2 extends Shape {
+	constructor(ptnWdth, col) {
+		super(ptnWdth, col)
+		this.setOff(random() < 0.75)
+		this.setStepY(random([45, 50, 60, 70]))
+		this.setSizeY(this.stepY * random(0.4, 0.9))
+		this.setX(random([0.25, 0.3, 0.35]))
+
+		if (this.off && random() < 0.5) {
+			this.setX(random(0.5, 0.9))
+			this.setSizeY(this.stepY * random(0.25, 0.45))
+		}
+
+		this.outline = random() < 0.5
+		this.c1 = [0.5, 0]
+		this.c2 = [1, 0]
+
+		this.needStrokeOffset = false
+	}
+
+	drawShape(x, y, w, h) {
+		let p1 = [x + w * this.c1[0], h * this.c1[1]]
+		let p2 = [x + w * this.c2[0], h * this.c2[1]]
+		let p3 = [x + w, h * 0.5]
+
+		beginShape()
+		vertex(x, y)
+		bezierVertex(p1[0], y + p1[1], p2[0], y + p2[1], p3[0], y + p3[1])
+		bezierVertex(p2[0], y + h - p2[1], p1[0], y + h - p1[1], x, y + h)
+		endShape()
 	}
 }
 
@@ -342,7 +407,7 @@ function drawPatterns() {
 
 	stepN = ceil(width / stepWidth)
 	stepWidth = width / stepN
-	stepSmall = stepWidth * 0.35
+	stepSmall = stepWidth * 0.3
 	stepBig = stepWidth - stepSmall
 
 	background(color1)
@@ -372,7 +437,8 @@ function drawPatterns() {
 			translate(xPos, 0)
 
 			let shape = randomShape(stepBig, color2)
-			// let shape = new ShapeBumps(stepBig, color2)
+			// let shape = new ShapeBumps2(stepBig, color2)
+
 			console.log(shape)
 			shape.loop()
 			xPos += stepBig
@@ -384,18 +450,18 @@ function drawPatterns() {
 }
 
 function randomShape(ptnWdth, col) {
-	let choice = random(['tri', 'trizig', 'bumps', 'leaf', 'rects', 'leaf'])
+	let choice = random(['tri', 'trizig', 'bumps', 'bumps', 'leaf', 'rects', 'leaf'])
 	switch (choice) {
 		case 'tri':
 			return new ShapeTri(ptnWdth, col, false)
 		case 'trizig':
 			return new ShapeTri(ptnWdth, col, true)
 		case 'bumps':
-			return new ShapeBumps(ptnWdth, col)
+			return new ShapeBumps2(ptnWdth, col)
 		case 'leaf':
 			return new ShapeLeaf(ptnWdth, col)
 		default:
-			return new Shape(ptnWdth, col)
+			return new ShapeRect(ptnWdth, col)
 	}
 }
 
