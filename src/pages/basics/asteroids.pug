@@ -7,8 +7,10 @@ tags: ['exercise', 'nature of code', 'basics', 'experiment']
 extends ../../layouts/p5-art.pug
 
 block info
-	div excercise from: 
-		a(href='https://natureofcode.com/book/chapter-3-oscillation/') nature of code chapter 3
+	.info excercise from:
+			a(href='https://natureofcode.com/book/chapter-3-oscillation/') nature of code chapter 3
+			br
+			| left arrow + right arrow + z
 
-block append scripts 
+block append scripts
 	script(src='/scripts/basics/asteroids.js' type='module')

@@ -1,3 +1,4 @@
+import * as p5 from 'p5'
 import { paletteFromUrl } from '../utils/utils.js'
 let usePalettes = true
 let color1, color2
@@ -58,7 +59,26 @@ function draw() {
 }
 
 class Shape {
-	constructor(ptnWdth, col) {
+	ptnWdth: number
+	col: p5.Color
+	stepY: number
+	sizeY: number
+	stepN: number
+	multX: number
+	sizeX: number
+	off: boolean
+	outline: boolean
+	strokeWeight: number
+	lineWeight: number
+	dots: Dots[] | false
+	opposite: boolean
+	needStrokeOffset: boolean
+	dotPosX: number
+	dotPosY: number
+	lines: 'left' | 'right' | 'both' | false
+	stepExtras?(): void | undefined
+
+	constructor(ptnWdth: number, col: p5.Color) {
 		this.ptnWdth = ptnWdth
 		this.col = col
 
@@ -102,6 +122,7 @@ class Shape {
 	}
 
 	drawDot(i) {
+		if (!this.dots) return
 		let index = i % this.dots.length
 		let current = this.dots[index]
 		if (!current) return
@@ -216,6 +237,9 @@ class ShapeRect extends Shape {
 }
 
 class ShapeTri extends Shape {
+	midX: number
+	midY: number
+
 	constructor(ptnWdth, col, off) {
 		super(ptnWdth, col)
 
@@ -268,6 +292,9 @@ class ShapeTri extends Shape {
 }
 
 class ShapeBumps extends Shape {
+	r: number
+	x2: number
+
 	constructor(ptnWdth, col) {
 		super(ptnWdth, col)
 		this.setStepY(random([60, 70, 80, 90]))
@@ -307,6 +334,9 @@ class ShapeBumps extends Shape {
 }
 
 class ShapeLeaf extends Shape {
+	c: [number, number]
+	len: number
+	r: number
 	constructor(ptnWdth, col) {
 		super(ptnWdth, col)
 		this.setOff(random() < 0.5)
@@ -369,6 +399,9 @@ class ShapeLeaf extends Shape {
 }
 
 class ShapeBumps2 extends Shape {
+	c1: [number, number]
+	c2: [number, number]
+
 	constructor(ptnWdth, col) {
 		super(ptnWdth, col)
 		this.setOff(random() < 0.75)
@@ -449,7 +482,7 @@ function drawPatterns() {
 	}
 }
 
-function randomShape(ptnWdth, col) {
+function randomShape(ptnWdth: number, col: p5.Color) {
 	let choice = random(['tri', 'trizig', 'bumps', 'bumps', 'leaf', 'rects', 'leaf'])
 	switch (choice) {
 		case 'tri':
@@ -466,6 +499,10 @@ function randomShape(ptnWdth, col) {
 }
 
 class Dots {
+	mult: number
+	size: number
+	style: 'fill' | 'stroke'
+
 	constructor(patternWidth, [multMin, multMax] = [0.1, 0.4]) {
 		this.mult = random(multMin, multMax)
 		this.size = this.mult * patternWidth
@@ -484,6 +521,8 @@ class Dots {
 	}
 }
 
+// @ts-ignore
 window.setup = setup
+// @ts-ignore
 window.draw = draw
 window.mouseClicked = mouseClicked
