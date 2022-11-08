@@ -15,27 +15,6 @@ function draw() {
 	patternTwo(m, step)
 }
 
-function patternThree(m, step) {
-	noFill()
-	strokeWeight(3)
-	translate((width - m) / 2, (height - m) / 2)
-
-	for (let x = 0; x < m; x += step) {
-		for (let y = 0, yi = 0; y < m; y += step, yi++) {
-			push()
-			translate(x, y)
-
-			stroke(255, 10)
-			rect(0, 0, step, step)
-
-			stroke(100, 255, 100)
-			let xVal = animLoop.progress * step
-			line(xVal, 0, xVal, step)
-			pop()
-		}
-	}
-}
-
 function patternOne(m, step) {
 	noFill()
 	strokeWeight(3)
@@ -81,10 +60,10 @@ function patternTwo(m, step) {
 	noFill()
 	strokeWeight(3)
 
-	// translate((width - m) / 2, (height - m) / 2)
-	translate(width / 2, height / 2)
-	rotate(PI * 0.25)
-	translate(-m / 2, -m / 2)
+	translate((width - m) / 2, (height - m) / 2)
+	// translate(width / 2, height / 2)
+	// rotate(PI * 0.25)
+	// translate(-m / 2, -m / 2)
 
 	let t = 1
 
@@ -104,16 +83,16 @@ function patternTwo(m, step) {
 			stroke(0, 255, 220)
 			strokeWeight(1)
 			let i = 0
-			line(px, 0, 0, py)
+			// line(px, 0, 0, py)
 
 			let xStep = px / linesN
 			let yStep = py / linesN
-			while (i < linesN) {
-				let nx = xStep * i
-				let ny = yStep * i
-				line(nx, 0, 0, ny)
-				i++
-			}
+			// while (i < linesN) {
+			// 	let nx = xStep * i
+			// 	let ny = yStep * i
+			// 	line(nx, 0, 0, ny)
+			// 	i++
+			// }
 
 			if (yi % 2 == 1 && xi % 2 == 1) {
 				stroke(200, 0, 100)
@@ -124,17 +103,17 @@ function patternTwo(m, step) {
 				line(step - s, s, step - e, e)
 			}
 
-			if (yi % 2 == 1 && xi % 2 == 1) {
-				fill(255, 200, 10)
-				noStroke()
-				circle(step / 2, step / 2, 10)
+			// if (yi % 2 == 1 && xi % 2 == 1) {
+			// 	fill(255, 200, 10)
+			// 	noStroke()
+			// 	circle(step / 2, step / 2, 10)
 
-				let p = (animLoop.progress * 2 + xi * 0.4) % 1
-				noFill()
-				stroke(255, 200, 10, 255 - 255 * p)
-				strokeWeight(2)
-				circle(step / 2, step / 2, p * 50)
-			}
+			// 	let p = (animLoop.progress * 2 + xi * 0.4) % 1
+			// 	noFill()
+			// 	stroke(255, 200, 10, 255 - 255 * p)
+			// 	strokeWeight(2)
+			// 	circle(step / 2, step / 2, p * 50)
+			// }
 
 			pop()
 		}
