@@ -1,97 +1,5 @@
-$smoke: hsl(30, 13%, 6%);
-// $smoke: hsl(60, 3%, 6%);
-// $smoke-1: hsl(30, 5%, 8%);
-$smoke-1: #1b1917;
-// $smoke-2: hsl(20, 6%, 9%);
-$smoke-2: #242220;
-// $smoke-3: hsl(20, 5%, 11%);
-$smoke-3: #2e2c2a;
-// $smoke-4: hsl(20, 5%, 12%);
-$smoke-4: #373534;
-// $smoke-5: hsl(30, 6%, 14%);
-$smoke-5: #413f3d;
-// $smoke-6: hsl(30, 5%, 15%);
-$smoke-6: #4a4947;
-// $smoke-7: hsl(40, 2%, 24%);
-$smoke-7: #545251;
-// $smoke-8: hsl(20, 2%, 32%);
-$smoke-8: #5d5c5a;
-// $smoke-9: hsl(40, 1%, 41%);
-$smoke-9: #676564;
-// $smoke-10: hsl(20, 1%, 49%);
-$smoke-10: #706f6e;
-$smoke--1: hsl(40, 11%, 5%);
-$smoke--2: hsl(30, 17%, 5%);
-$smoke--3: hsl(40, 14%, 4%);
-// $smoke-1: #292725;
-// $smoke-2: #413f3d;
-// $smoke-3: #585756;
-// $smoke-4: #706f6e;
-// $smoke-5: #888786;
-
-$green: #06a77c;
-$green--1: #059670;
-$green--2: #059670;
-$green--3: #047557;
-$green-1: #1fb089; // 10%
-$green-2: #38b996; // 20%
-$green-3: #51c1a3; // 30%
-
-$rose: #f46672;
-$rose--1: #dc5c67; // 10%
-$rose--2: #c3525b; // 20%
-$rose--3: #ab4750; // 30%
-$rose--4: #923d44;
-$rose--5: #7a3339;
-$rose--6: #62292e;
-$rose-1: #f6858e; // 20%
-$rose-2: #f8a3aa; // 40%
-$rose-3: #fbc2c7; // 60%
-
-$yellow: #fad161;
-$yellow--1: #c8a74e; // 20%
-$yellow-1: #fbda81; // 20%
-$yellow-2: #fce3a0; // 40%
-$yellow-3: #fdedc0; // 60%
-$yellow-4: #fef6df; // 80%
-
-$purple: #652c90;
-$purple--1: #512373; // 20%
-$purple--2: #3d1a56; // 40%
-$purple--3: #28123a; // 60%
-$purple--4: #14091d; // 80%
-$purple-1: #8456a6; // 20%
-$purple-2: #a380bc;
-$purple-3: #c1abd3;
-$purple-4: #e0d5e9;
-
-$eggplant: #241430;
-$eggplant-1: #3a2b45;
-$eggplant-2: #504359;
-$eggplant-3: #665b6e;
-$eggplant-4: #7c7283;
-$eggplant-5: #928a98;
-$eggplant-6: #a7a1ac;
-$eggplant-7: #bdb9c1;
-$eggplant-8: #d3d0d6;
-$eggplant--1: #20122b;
-$eggplant--2: #1d1026;
-$eggplant--3: #190e22;
-$eggplant--4: #160c1d;
-
-$eggplant: #170d1e;
-$eggplant-1: #2e2534;
-$eggplant-2: #453d4b;
-$eggplant-3: #5d5662;
-$eggplant-4: #746e78;
-$eggplant-5: #8b868f;
-$eggplant-6: #a29ea5;
-$eggplant-7: #b9b6bc;
-$eggplant-8: #d1cfd2;
-$eggplant--1: #150c1b;
-$eggplant--2: #120a18;
-$eggplant--3: #100915;
-$eggplant--4: #0e0812;
+@use '../base/vars';
+@use '../base/form-els';
 
 .radio-opts {
 	display: flex;
@@ -102,8 +10,8 @@ $eggplant--4: #0e0812;
 }
 
 .custom-controls {
-	background-color: var(--smoke-1);
-	color: var(--yellow-3);
+	background-color: $smoke-1;
+	color: $yellow-3;
 	font-size: 0.8rem;
 	line-height: 1.3;
 	width: 300px;
@@ -114,14 +22,14 @@ $eggplant--4: #0e0812;
 
 	button {
 		font-size: 0.7rem;
-		color: var(--yellow-3);
+		color: $yellow-3;
 	}
 
 	.tabs-container button {
 		margin-right: 3px;
 		font-size: 0.7rem;
-		color: var(--yellow-3);
-		background-color: var(--smoke-2);
+		color: $yellow-3;
+		background-color: $smoke-2;
 		opacity: 0.5;
 
 		&.active {
@@ -150,7 +58,7 @@ $eggplant--4: #0e0812;
 		overflow: hidden;
 		padding: 0;
 		margin-right: -0.4rem;
-		background-color: var(--smoke-2);
+		background-color: $smoke-2;
 		transition: all 300ms;
 		max-height: 0px;
 		&.active {
@@ -168,8 +76,8 @@ $eggplant--4: #0e0812;
 			padding: 0;
 			--toggleSize: 0.9rem;
 			font-weight: 800;
-			background-color: var(--yellow-2);
-			color: var(--smoke-1);
+			background-color: $yellow-2;
+			color: $smoke-1;
 			border-radius: 50%;
 			width: var(--toggleSize);
 			height: var(--toggleSize);
@@ -189,14 +97,14 @@ $eggplant--4: #0e0812;
 			width: 200px;
 			top: calc(100% + var(--triangle) + 2px);
 			left: 0;
-			background-color: var(--yellow-4);
-			color: var(--smoke-3);
+			background-color: $yellow-4;
+			color: $smoke-3;
 			padding: 5px;
 			&:before {
 				content: '';
 				border-left: var(--triangle) solid transparent;
 				border-right: var(--triangle) solid transparent;
-				border-bottom: var(--triangle) solid var(--yellow-4);
+				border-bottom: var(--triangle) solid $yellow-4;
 				position: absolute;
 				top: 0;
 				left: 5px;
@@ -267,7 +175,7 @@ $eggplant--4: #0e0812;
 	}
 
 	.section {
-		border-top: 1px solid var(--smoke-4);
+		border-top: 1px solid $smoke-4;
 		margin-top: 3px;
 		&:nth-child(1) {
 			border-top: 0;
@@ -275,7 +183,7 @@ $eggplant--4: #0e0812;
 		h4 {
 			margin: 0;
 			margin-top: 3px;
-			color: var(--yellow-2);
+			color: $yellow-2;
 			font-size: 1rem;
 			line-height: 1;
 			display: flex;
@@ -345,7 +253,7 @@ $eggplant--4: #0e0812;
 		}
 		select {
 			margin-left: 5px;
-			background: var(--smoke);
+			background: $smoke;
 			color: #efefef;
 			border: 1px solid #000;
 			box-shadow: none;
