@@ -27,6 +27,7 @@
 		"@parcel/core": "^2.0.1",
 		"@parcel/reporter-cli": "^2.0.1",
 		"@types/p5": "^1.4.3",
+		"pts": "^0.11.2",
 		"typescript": "^4.8.4"
 	}
 }
