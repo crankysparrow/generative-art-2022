@@ -5,12 +5,19 @@ var form = space.getForm()
 
 let pts = new Group()
 
-space.add((time, ftime) => {
-	pts.push(new Pt(Math.random() * space.size.x, Math.random() * space.size.y))
+// https://ptsjs.org/demo/?name=canvasspace.action
+space.add({
+	animate: (time, ftime) => {
+		// pts.push(new Pt(Math.random() * space.size.x, Math.random() * space.size.y))
 
-	pts.forEach((pt) => {
-		form.fillOnly('#f0f').point(pt, 5, 'circle')
-	})
+		if (pts.length > 10) pts.shift()
+		form.strokeOnly('#d0a', 3).line(pts)
+		form.fillOnly('#123').point(space.pointer, 10, 'circle')
+	},
+
+	action: (type, px, py) => {
+		if (type === 'move') pts.push(new Pt(px, py))
+	},
 })
 
 space.bindMouse().bindTouch().play()
