@@ -14,7 +14,7 @@ export class AllTheCircles {
 		spaceFromEdge = 20,
 		build = true,
 		attemptsEachStep = 1000,
-		stepSize = 2,
+		steps = 10,
 	}) {
 		this.circles = []
 		this.size = size
@@ -26,7 +26,7 @@ export class AllTheCircles {
 		this.space = space ?? this.width * 0.01
 		this.overlapEdges = overlapEdges
 		this.attemptsEachStep = attemptsEachStep
-		this.stepSize = stepSize / 100
+		this.steps = steps
 		this.spaceFromEdge = spaceFromEdge
 
 		if (build) {
@@ -36,16 +36,19 @@ export class AllTheCircles {
 
 	circleTime() {
 		let timesTried = 0
-		let sub = 0
+		let step = 0
 
-		while (sub < 1) {
+		while (step < this.steps) {
 			let i = 0
 			// ease out to subtract larger amounts first, then less as we get closer to the min
-			let multiplier = this.multMax - this.diff * easeOutCubic(sub)
+			let multiplier = this.multMax - this.diff * easeOutCubic(step / this.steps)
 			let currentSize = floor(this.size * multiplier)
 
+			let timesThisStep = 0
+			let addedThisStep = 0
 			while (i < this.attemptsEachStep) {
 				timesTried++
+				timesThisStep++
 				let c = new Circle(
 					Math.floor(random(this.width)),
 					Math.floor(random(this.height)),
@@ -55,12 +58,14 @@ export class AllTheCircles {
 				if (this.checkOverlap(c)) {
 					i++
 				} else {
+					addedThisStep++
 					this.circles.push(c)
 					i = 0
 				}
 			}
 
-			sub += this.stepSize
+			step += 1
+			console.log({ step, timesThisStep, addedThisStep })
 		}
 		console.log({ timesTried, length: this.circles.length })
 	}
@@ -106,8 +111,8 @@ export class AllTheCircles {
 		}
 	}
 
-	newCircle(size, attempts = 0, log = false, index) {
-		if (attempts > 10) {
+	newCircle(size, maxAttempts = 10, log = true, attempts = 0, index) {
+		if (attempts > maxAttempts) {
 			if (log) {
 				console.log('size: ' + size + ' give up')
 			}
@@ -121,7 +126,7 @@ export class AllTheCircles {
 		)
 		if (this.checkOverlap(c)) {
 			attempts++
-			this.newCircle(size, attempts)
+			this.newCircle(size, maxAttempts, log, attempts)
 		} else {
 			this.circles.push(c)
 			if (log) {

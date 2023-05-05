@@ -1,14 +1,16 @@
 function setup() {
 	createCanvas(400, 400)
 
-	let osc = new p5.Oscillator()
-	osc.freq(600)
-	osc.setType('sawtooth')
-	osc.start()
+	noLoop()
 }
 
 function draw() {
 	background(200)
+
+	let osc = new p5.Oscillator()
+	osc.freq(600)
+	osc.setType('sawtooth')
+	osc.start()
 }
 
 window.setup = setup

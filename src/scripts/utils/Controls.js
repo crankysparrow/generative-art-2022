@@ -26,7 +26,6 @@ export class Controls {
 	}
 
 	buildContainer() {
-		console.log(this.rightSide)
 		let outer = createDiv()
 			.class('custom-controls')
 			.position(this.rightSide ? window.innerWidth - 270 : 0, 0)
