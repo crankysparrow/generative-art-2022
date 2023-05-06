@@ -1,6 +1,18 @@
 extends ../layouts/normal.pug 
 
 block content
+
+	//- img(src='/images/01-circles.jpg')
+
+	div.gallery
+		each item in collections.show 
+			div.gallery-item 
+				a(href=item.url).gallery-link
+					.gallery-img-wrap
+						img(src=`images/${item.data.img}` alt=item.data.title).gallery-img 
+						div.gallery-title
+							span.gallery-title-text=item.data.title
+
 	table.main
 		tr 
 			th title 
@@ -16,16 +28,3 @@ block content
 					div.taglist 
 						each tag in exp.data.tags 
 							span=tag
-
-
-	//- 	<li>
-	//- 		<a href={{this.url}}>
-	//- 			{{#if this.data.title}} 
-	//- 				{{ this.data.title }}
-	//- 			{{else}}
-	//- 				{{this.url}}
-	//- 			{{/if}}
-	//- 		</a>
-	//- 			{{ formatDate this.date }}
-	//- 			</li>
-	//- {{/each}}

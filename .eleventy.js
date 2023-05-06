@@ -1,4 +1,5 @@
 const { DateTime } = require('luxon')
+const util = require('util')
 
 module.exports = function (eleventyConfig) {
 	eleventyConfig.addPassthroughCopy({ 'src/images': 'images' })
@@ -7,9 +8,13 @@ module.exports = function (eleventyConfig) {
 		return DateTime.fromJSDate(dateObj).toLocaleString(DateTime.DATE_MED)
 	})
 
+	eleventyConfig.addFilter('console', function (value, level = 2) {
+		return util.inspect(value, { depth: level })
+	})
+
 	global.filters = eleventyConfig.javascriptFunctions
 	eleventyConfig.setPugOptions({
-		globals: ['filters'],
+		globals: ['filters', 'console'],
 	})
 
 	return {
