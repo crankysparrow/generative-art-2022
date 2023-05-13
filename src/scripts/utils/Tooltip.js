@@ -4,13 +4,24 @@ style.textContent = cssText
 document.body.appendChild(style)
 
 export class Tooltip {
-	constructor({ tipContentBlock, titleString, tipContent, btnName, note }) {
+	constructor({
+		tipContentBlock,
+		titleString,
+		tipContent,
+		btnName,
+		note,
+		right = false,
+		startOpen = false,
+	}) {
 		this.btn
 		this.closeBtn
-		this.tip = createDiv().position(0, 0).class('tooltip')
-		this.buildButtons(btnName)
+		this.tip = createDiv().class(right ? 'tooltip right' : 'tooltip ')
+
+		this.buildButtons(btnName, right)
 		this.title = createElement('h2', titleString).parent(this.tip).class('tooltip-title')
-		this.contentBlock = tipContentBlock ? tipContentBlock.parent(this.tip) : createDiv().parent(this.tip)
+		this.contentBlock = tipContentBlock
+			? tipContentBlock.parent(this.tip)
+			: createDiv().parent(this.tip)
 
 		if (tipContent) {
 			this.buildTable(tipContent)
@@ -19,12 +30,16 @@ export class Tooltip {
 		if (note) {
 			this.addNote(note)
 		}
+
+		if (startOpen) {
+			this.openTooltip()
+		}
 	}
 
-	buildButtons(btnName) {
-		this.btn = createButton(btnName ?? 'controls')
-			.position(0, 0)
-			.class('tooltip-btn')
+	buildButtons(btnName, right) {
+		this.btn = createButton(btnName ?? 'controls').class(
+			right ? 'tooltip-btn right' : 'tooltip-btn'
+		)
 		this.closeBtn = createButton('')
 			.parent(this.tip)
 			.class('tooltip-close')

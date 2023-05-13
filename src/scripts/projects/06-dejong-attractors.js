@@ -27,6 +27,7 @@ function setup() {
 	createCanvas(window.innerWidth, window.innerHeight)
 	buildControls()
 
+	colorMode(HSB)
 	nSteps = 1000
 	m = min(width, height) * 0.9
 
@@ -65,7 +66,6 @@ function setAttractors() {
 function setColors() {
 	let c = colsRadio.value()
 	if (c == 'color') {
-		colorMode(HSB)
 		let hue1 = random(360)
 		let hue2 = random(hue1, hue1 + 200) % 360
 		c1 = color(hue1, random(80, 100), random(70, 100))
@@ -81,12 +81,12 @@ function setColors() {
 }
 
 function setupFlowField() {
-	background(0, 0, 100, 1)
+	background(0, 0, 5)
 
 	setAttractors()
 	setColors()
 
-	fill(0)
+	fill(50)
 	text(`a: ${a}`, width - 100, height - 100)
 	text(`b: ${b}`, width - 100, height - 80)
 	text(`c: ${c}`, width - 100, height - 60)
@@ -253,6 +253,10 @@ function buildControls() {
 		],
 	})
 
+	controls.createText({
+		text: 'make sure "custom" is selected in general panel and click "restart". not all combinations will create interesting results!',
+		parent: attractPanel,
+	})
 	inputA = controls.createSlider({
 		labelString: 'a',
 		min: -4,

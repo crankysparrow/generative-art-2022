@@ -20,17 +20,31 @@ $bgs: (
 	#19224e,
 	#0a848a,
 	#ff1904,
-	#e8ff52,
+	// #e8ff52,
 	#10a8aa,
 	#c92dec,
+	#62ff37,
 	#810de0,
 	#f2e724,
-	#fa7122
+	#fa7122,
+	#32f2b5,
+	#f22424
 );
 
 .gallery-item {
-	background-color: #e8ff52;
 	padding: 15%;
+	overflow: hidden;
+
+	&.info-item {
+		background-color: #e8ff52 !important;
+		a {
+			color: rgb(224, 90, 0);
+			&:hover,
+			&:focus {
+				color: rgb(133, 0, 170);
+			}
+		}
+	}
 
 	@for $i from 1 through length($bgs) {
 		&:nth-child(#{$i}) {
@@ -43,7 +57,6 @@ $bgs: (
 	position: relative;
 	width: 100%;
 	padding-bottom: 100%;
-	overflow: hidden;
 }
 
 .gallery-img {
@@ -51,7 +64,18 @@ $bgs: (
 	display: block;
 	width: 100%;
 	height: 100%;
+	object-fit: cover;
 	object-position: center;
+	z-index: 1;
+}
+
+.gallery-img.gallery-img-extra {
+	filter: blur(20px) saturate(250%) brightness(150%);
+	z-index: 0;
+	transform: scale(1.05);
+	transition: all 200ms;
+	opacity: 0;
+	will-change: opacity;
 }
 
 .gallery-title {
@@ -83,14 +107,8 @@ $bgs: (
 
 	&:hover,
 	&:focus {
-		.gallery-title {
-			transform: translate(0, 0);
+		.gallery-img-extra {
 			opacity: 1;
-
-			.gallery-title-text {
-				transform: none;
-				opacity: 1;
-			}
 		}
 	}
 }

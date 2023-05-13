@@ -7,8 +7,8 @@ import * as p5 from 'p5'
 // abs(y/b) = pow(1 - (abs(x/a))^n, 1 / n)
 
 function setup() {
-	// let m = min(window.innerWidth, window.innerHeight)
-	createCanvas(400, 400)
+	let m = min(min(window.innerWidth, window.innerHeight), 600)
+	createCanvas(m, m)
 	rectMode(CENTER)
 	noLoop()
 }

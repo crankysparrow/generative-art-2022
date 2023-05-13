@@ -1,10 +1,14 @@
 ---
 date: 2022-04-04
 title: 'sleepytime'
-tags: ['experiment', 'loop']
+tags: ['experiment', 'loop', 'show']
+img: '14.jpg'
 ---
 
 extends ../layouts/p5-art.pug
+
+block info 
+	.info click to regenerate
 
 block append scripts 
 	script(src='https://unpkg.com/p5.createloop@0.2.8/dist/p5.createloop.js')

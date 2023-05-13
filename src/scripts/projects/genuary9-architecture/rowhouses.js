@@ -2,7 +2,7 @@ import { paletteOptions } from './palettes'
 let palette
 
 function setup() {
-	createCanvas(window.innerHeight, window.innerHeight)
+	createCanvas(window.innerWidth, window.innerHeight)
 	noLoop()
 }
 
