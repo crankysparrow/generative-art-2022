@@ -9,7 +9,7 @@
 		"watch:eleventy": "npx @11ty/eleventy --watch",
 		"clean": "rm -rf _site && rm -rf .parcel-cache",
 		"build:parcel": "parcel build src/scripts/projects/*/*.js src/scripts/projects/*.js src/scripts/projects/*.ts src/scripts/basics/*.js src/scripts/sound/*.js src/styles/main.scss --dist-dir _site",
-		"build:eleventy": "npx @11ty/eleventy",
+		"build:eleventy": "npx @11ty/eleventy --pathprefix='/generative-art-2022/'",
 		"build:all": "run-p build:parcel build:eleventy",
 		"build": "run-s clean build:all",
 		"bs": "browser-sync start --config bs-config.js"
@@ -23,10 +23,11 @@
 		"browser-sync": "^2.27.7",
 		"npm-run-all": "^4.1.5",
 		"parcel": "^2.0.1",
-		"sharp": "^0.29.3"
+		"sharp": "^0.31.3"
 	},
 	"dependencies": {
-		"@11ty/eleventy": "^0.12.1",
+		"@11ty/eleventy": "^2.0.1",
+		"@11ty/eleventy-upgrade-help": "^2.0.5",
 		"@parcel/config-default": "^2.0.1",
 		"@parcel/core": "^2.0.1",
 		"@parcel/reporter-cli": "^2.0.1",
