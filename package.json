@@ -8,6 +8,10 @@
 		"watch:parcel": "parcel watch src/scripts/projects/*/*.js src/scripts/projects/*.js src/scripts/projects/*.ts src/scripts/basics/*.js src/scripts/sound/*.js src/styles/main.scss --dist-dir _site",
 		"watch:eleventy": "npx @11ty/eleventy --watch",
 		"clean": "rm -rf _site && rm -rf .parcel-cache",
+		"build:parcel": "parcel build src/scripts/projects/*/*.js src/scripts/projects/*.js src/scripts/projects/*.ts src/scripts/basics/*.js src/scripts/sound/*.js src/styles/main.scss --dist-dir _site",
+		"build:eleventy": "npx @11ty/eleventy",
+		"build:all": "run-p build:parcel build:eleventy",
+		"build": "run-s clean build:all",
 		"bs": "browser-sync start --config bs-config.js"
 	},
 	"author": "",
