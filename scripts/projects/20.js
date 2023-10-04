@@ -1,0 +1,2 @@
+(()=>{function t(t,e,o,n,r=!1){push(),translate(t,e),rotate(r?90:-90);let i=0;for(;i<3;)rotate(120),rect(-o/2,0,o,n),i++;pop()}window.setup=function(){createCanvas(400,400),angleMode(DEGREES),noLoop()},window.draw=function(){background(0),strokeWeight(1),stroke(255),noFill();let e=width/4,o=e;stroke("#fff"),strokeWeight(3),noFill();let n=0;for(let r=-.5*o;r<width;r+=o){n++;let o=n%2==0;t(r,200,60,e,o),t(r,0,60,e,!o),t(r,400,60,e,!o)}},window.mousePressed=()=>redraw()})();
+//# sourceMappingURL=20.js.map
