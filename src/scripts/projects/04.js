@@ -1,7 +1,7 @@
 import { paletteFromUrl } from '../utils/utils.js'
 import { Tooltip } from '../utils/Tooltip.js'
 
-let m, tileSize, hueBase
+let m, tileSize
 let numTiles = 15
 let rSeed = 1
 let shape = 3
@@ -11,7 +11,6 @@ let url = 'https://coolors.co/0b2027-40798c-70a9a1-cfd7c7-f6f1d1'
 let paletteVals = paletteFromUrl(url)
 let b = paletteVals.splice(0, 1)
 let c1, c2, c3
-let tip
 
 function setup() {
 	createCanvas(window.innerWidth, window.innerHeight)
@@ -31,18 +30,12 @@ function setup() {
 	createP('<strong>[ 1, 2, 3 ]</strong>: shape style').parent(content)
 	createP('<strong>arrow right/left</strong>: shape size').parent(content)
 	createP('<strong>arrow up/down</strong>: alpha').parent(content)
-	tip = new Tooltip({ tipContentBlock: content, titleString: 'controls' })
-}
-
-function palette() {
-	return color(random(hueBase, hueBase + 10), random(50, 100), random(0, 100))
+	new Tooltip({ tipContentBlock: content, titleString: 'controls' })
 }
 
 function draw() {
-	blendMode(BLEND)
-	hueBase = floor(random(90))
+	if (keyIsPressed) keyPressActions()
 	background(b)
-	// background(color(random(hueBase, hueBase + 10), random(30, 50), random(0, 15)))
 	noFill()
 	noStroke()
 	randomSeed(rSeed)
@@ -118,21 +111,22 @@ window.setup = setup
 window.draw = draw
 
 window.keyPressed = () => {
+	if (key === 's') saveCanvas()
+}
+
+function keyPressActions() {
 	switch (key) {
-		case 's':
-			saveCanvas()
-			break
 		case 'ArrowRight':
-			shapeSize += 0.1
+			shapeSize += 0.05
 			break
 		case 'ArrowLeft':
-			shapeSize -= 0.1
+			if (shapeSize > 0) shapeSize -= 0.05
 			break
 		case 'ArrowDown':
-			alphaVal -= 1
+			if (alphaVal > 0) alphaVal -= 1
 			break
 		case 'ArrowUp':
-			alphaVal += 1
+			if (alphaVal < 255) alphaVal += 1
 			break
 		case '1':
 			shape = 1

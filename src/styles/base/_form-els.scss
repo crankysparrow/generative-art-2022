@@ -1,0 +1,88 @@
+@use './vars' as *;
+
+@use './range' with (
+   $track-color: $smoke-9,
+   $thumb-color: $yellow,
+   $thumb-radius: 0,
+   $thumb-height: 16px,
+   $thumb-width: 10px,
+   $thumb-border-color: $yellow-4,
+   $thumb-border-width: 0px,
+
+   $track-radius: 3px,
+   $track-border-color: transparent,
+   $track-height: 8px,
+   $contrast: 20%
+);
+
+input[type='text'] {
+   background-color: var(--smoke);
+   border: none;
+   color: #fefefe;
+   width: 100%;
+   font-size: 0.8rem;
+   line-height: 1.6;
+   margin: 0;
+   padding: 0 0.4rem;
+}
+
+input[type='checkbox'] {
+   -webkit-appearance: none;
+   appearance: none;
+   width: 1rem;
+   height: 1rem;
+   border: 2px solid currentColor;
+   background-color: var(--yellow-3);
+   border-radius: 2px;
+   position: relative;
+   display: grid;
+   place-content: center;
+   &:before {
+      content: '';
+      position: relative;
+      transform: scale(0);
+      width: 0.6rem;
+      height: 0.6rem;
+      transition: 120ms transform ease-in-out;
+      box-shadow: inset 1rem 1rem var(--smoke);
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+   }
+   &:checked {
+      &:before {
+         transform: scale(1);
+      }
+   }
+}
+
+button {
+   background-color: var(--smoke-3);
+   border: none;
+   color: #fff;
+   margin: 0;
+   cursor: pointer;
+   padding: 4px 4px;
+   font-size: 0.8rem;
+   font-weight: 500;
+   transition: all 300ms;
+   &:hover,
+   &:focus {
+      background-color: var(--green--2);
+      font-weight: 700;
+   }
+   &:focus {
+      outline: 2px solid var(--yellow-3);
+   }
+   &:focus:not(:focus-visible) {
+      outline: none;
+   }
+   &:focus-visible {
+      outline: 2px solid var(--yellow-3);
+   }
+}
+
+input,
+select {
+   &:focus {
+      outline: 2px solid var(--yellow-4);
+   }
+}

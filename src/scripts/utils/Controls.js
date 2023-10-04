@@ -26,10 +26,10 @@ export class Controls {
 	}
 
 	buildContainer() {
-		console.log(this.rightSide)
-		let outer = createDiv()
-			.class('custom-controls')
-			.position(this.rightSide ? window.innerWidth - 270 : 0, 0)
+		let outer = createDiv().class('custom-controls')
+		// .style(this.rightSide ? window.innerWidth - 270 : 0, 0)
+		outer.style(this.rightSide ? 'right' : 'left', 0)
+		outer.style('top', 0)
 		let btn = createButton('toggle controls')
 			.class('toggle-btn')
 			.parent(outer)
@@ -63,9 +63,8 @@ export class Controls {
 		this.tabsContainer = createDiv().class('tabs-container').parent(this.container)
 	}
 
-	addPanel({ titleString, id }) {
+	addPanel({ titleString, id = `controls-panel-${this.count}` }) {
 		this.count++
-		id = id ?? `controls-panel-${this.count}`
 		if (!this.tabsContainer) {
 			this.addPanelTabs()
 		}
@@ -159,7 +158,7 @@ export class Controls {
 		return btn
 	}
 
-	createBtnSet({ btns, parent = this.container, style, className }) {
+	createBtnSet({ btns, parent = this.container, style = false, className = false }) {
 		let d = createDiv().parent(parent).class('btn-container')
 		if (className) d.addClass(className)
 		let btnsOutput = []
@@ -183,15 +182,28 @@ export class Controls {
 		return d
 	}
 
-	createSlider({ id, labelString, onChange, min, max, step = 1, val, parent = this.container }) {
+	createSlider({
+		id = `controls-${this.count}`,
+		labelString,
+		onChange = undefined,
+		min,
+		max,
+		step = 1,
+		val,
+		parent = this.container,
+	}) {
 		this.count++
 		val = val ?? floor((max - min) / 2 + min)
-		id = id ?? `controls-${this.count}`
 		let d = createDiv().parent(parent).class('slider-container')
 		let l = createElement('label').parent(d).attribute('for', id)
 		let sp1 = createSpan(labelString).class('label-text').parent(l)
 		let s = createSlider(min, max, val, step).parent(l).attribute('id', id)
 		let sp2 = createSpan(val).class('slider-val').parent(l)
+
+		s.update = function (v) {
+			s.value(v)
+			sp2.html(v)
+		}
 
 		s.input((e) => {
 			sp2.html(s.value())

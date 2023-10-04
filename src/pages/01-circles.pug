@@ -1,10 +1,17 @@
 ---
 date: 2021-12-27
 title: 'circles&bars'
-tags: ['experiment', 'circlePacking', 'simple']
+tags: ['experiment', 'circlePacking', 'simple', 'show']
+img: '01-circles.jpg'
 ---
 
 extends ../layouts/p5-art.pug
+
+block info 
+    .info.top(style='background-color: rgba(255,255,255,0.8); max-width: 200px; line-height: 1.2;')
+        h1.h4 circle packing
+        p space to regenerate
+    
 
 block append scripts 
     script(src='/scripts/projects/01-circles.js' type='module')

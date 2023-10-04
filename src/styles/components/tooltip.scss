@@ -7,6 +7,13 @@
 	font-weight: 600;
 	font-size: 1rem;
 	z-index: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	&.right {
+		left: auto;
+		right: 0;
+	}
 	&:hover,
 	&:focus {
 		background: $dark;
@@ -22,10 +29,17 @@
 	min-height: 100px;
 	padding: 6px 10px;
 	display: none;
-	position: relative;
 	font-size: 0.9rem;
+	position: absolute;
+	top: 0;
+	left: 0;
+	&.right {
+		left: auto;
+		right: 0;
+	}
 	table {
 		font-size: 0.9rem;
+		width: 100%;
 	}
 	h2.tooltip-title {
 		font-size: 1.2rem;

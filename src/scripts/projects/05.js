@@ -29,24 +29,26 @@ function setup() {
 		titleString: 'keyboard shortcuts',
 		btnName: 'keys',
 		tipContent: [
-			['q', 'save'],
+			['s', 'save'],
 			['ArrowUp', 'alphaVal+'],
 			['ArrowDown', 'alphaVal-'],
 			['ArrowRight', 'tileSize+'],
 			['ArrowLeft', 'tileSize-'],
-			['s', 'strokeRange+'],
-			['d', 'strokeRange-'],
+			['c', 'strokeRange+'],
+			['x', 'strokeRange-'],
 			['a', 'alpha toggle'],
-			['h', 'hueVal1+'],
-			['n', 'hueVal1-'],
-			['j', 'hueVal2+'],
-			['m', 'hueVal2-'],
+			['j', 'hueVal1+'],
+			['h', 'hueVal1-'],
+			['m', 'hueVal2+'],
+			['n', 'hueVal2-'],
 			['b', 'toggle hueRotateClockwise'],
-			['1-4', 'steps * 10'],
+			['1-0', 'steps * 10'],
 			['w', 'new pattern'],
 		],
 		note: 'open console to view vals on change',
 	})
+
+	requestAnimationFrame(checkForKeys)
 }
 
 function patternLine(x, y, cur, g) {
@@ -121,40 +123,14 @@ function draw() {
 window.setup = setup
 window.draw = draw
 
-window.keyPressed = () => {
-	if (key === 'q') {
+window.keyReleased = () => {
+	if (key === 's') {
 		saveCanvas('gridpatterns')
 		return
-	} else if (key === 'w') {
-		p = createVector(random(), random())
-		redraw()
-		return
 	}
-	if (key == 'ArrowDown') {
-		settings.alphaVal -= 0.05
-	} else if (key == 'ArrowUp') {
-		settings.alphaVal += 0.05
-	} else if (key == 'ArrowRight') {
-		settings.tileSize += 5
-	} else if (key == 'ArrowLeft') {
-		settings.tileSize -= 5
-	} else if (key === 's') {
-		settings.strokeRange += 1
-	} else if (key === 'd') {
-		settings.strokeRange -= 1
-	} else if (key === 'a') {
-		settings.alphaToggle = !settings.alphaToggle
-		settings.alphaVal = 1
-	} else if (key === 'h') {
-		settings.hueVal1 += 5
-		settings.hueVal1 %= 365
-	} else if (key === 'j') {
-		settings.hueVal2 += 5
-		settings.hueVal2 %= 365
-	} else if (key === 'n') {
-		settings.hueVal1 = settings.hueVal1 < 5 ? 360 : settings.hueVal1 - 5
-	} else if (key === 'm') {
-		settings.hueVal2 = settings.hueVal2 < 5 ? 360 : settings.hueVal2 - 5
+
+	if (key === 'w') {
+		p = createVector(random(), random())
 	} else if (key === 'b') {
 		settings.hueClockwise = !settings.hueClockwise
 	} else if (key === '1') {
@@ -177,9 +153,51 @@ window.keyPressed = () => {
 		settings.steps = 90
 	} else if (key == '0') {
 		settings.steps = 100
+	} else if (key == 'a') {
+		settings.alphaToggle = !settings.alphaToggle
+		settings.alphaVal = 1
 	}
 
-	redraw()
-
 	console.log(settings)
+
+	redraw()
+}
+
+function keyPressActions() {
+	let doRedraw = true
+	if (key == 'ArrowDown') {
+		if (settings.alphaVal > 0) settings.alphaVal -= 0.01
+	} else if (key == 'ArrowUp') {
+		if (settings.alphaVal < 1) settings.alphaVal += 0.01
+	} else if (key == 'ArrowRight') {
+		settings.tileSize += 1
+	} else if (key == 'ArrowLeft') {
+		if (settings.tileSize > 0) settings.tileSize -= 1
+	} else if (key === 'c') {
+		settings.strokeRange += 0.01
+	} else if (key === 'x') {
+		if (settings.strokeRange > 1.01) settings.strokeRange -= 0.01
+	} else if (key === 'j') {
+		settings.hueVal1 += 1
+		settings.hueVal1 %= 365
+	} else if (key === 'm') {
+		settings.hueVal2 += 1
+		settings.hueVal2 %= 365
+	} else if (key === 'h') {
+		settings.hueVal1 = settings.hueVal1 < 5 ? 360 : settings.hueVal1 - 1
+	} else if (key === 'n') {
+		settings.hueVal2 = settings.hueVal2 < 5 ? 360 : settings.hueVal2 - 1
+	} else {
+		doRedraw = false
+	}
+
+	return doRedraw
+}
+
+function checkForKeys() {
+	if (keyIsPressed) {
+		if (keyPressActions()) redraw()
+	}
+
+	requestAnimationFrame(checkForKeys)
 }

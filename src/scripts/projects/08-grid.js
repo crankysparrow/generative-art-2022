@@ -1,5 +1,7 @@
 let tiles = []
-let m, step
+let m, step, lines, getStroke
+
+document.body.style.backgroundColor = '#000'
 
 function setup() {
 	createCanvas(min(window.innerWidth, 500), min(window.innerHeight, 500))
@@ -8,16 +10,44 @@ function setup() {
 
 	m = min(width, height) * 0.6
 	step = m * 0.2
+	setVars()
+}
+
+function setVars() {
+	lines = random([3, 4, 5])
+	getStroke = getStrokeFn()
 }
 
 function draw() {
 	background(0)
-	patternTwo(m, step)
+	patternOne(m, step)
+}
+
+function getStrokeFn() {
+	let indexes = shuffle([0, 1, 2])
+
+	return {
+		inner: function (i) {
+			let vals = []
+			vals[indexes[0]] = 0
+			vals[indexes[1]] = 255
+			vals[indexes[2]] = i * 120 + 100
+			vals[3] = (lines - i) * 100
+			stroke(...vals)
+		},
+		outer: function () {
+			let vals = []
+			vals[indexes[0]] = 0
+			vals[indexes[1]] = 100
+			vals[indexes[2]] = 50
+			stroke(...vals)
+		},
+	}
 }
 
 function patternOne(m, step) {
 	noFill()
-	strokeWeight(3)
+	strokeWeight(2)
 	translate(width / 2, height / 2)
 	rotate(PI * 0.25)
 	translate(-m / 2, -m / 2)
@@ -28,19 +58,20 @@ function patternOne(m, step) {
 			translate(x, y)
 
 			let i = 0
-			while (i < 3) {
-				let lx = x - (step * i * 2) / m
-				let ly = y - (step * i * 2) / m
+			while (i < lines) {
+				let lx = x - (step * i) / m
+				let ly = y - (step * i) / m
 
 				let px = map(sin(animLoop.theta + lx * 2), -1, 1, 0, 1) * step
 				let py = map(sin(animLoop.theta + ly * 2), -1, 1, 0, 1) * step
 
-				stroke(0, 255, i * 120 + 100, (3 - i) * 100)
+				// stroke(0, 255, i * 120 + 100, (lines - i) * 100)
+				getStroke.inner(i)
 				line(px, 0, 0, py)
 				i++
 			}
 
-			let a = 50 - map(sin(animLoop.theta + ((x * y) / (m * m)) * 3), -1, 1, 0, 50)
+			let a = 40 - map(sin(animLoop.theta + ((x * y) / (m * m)) * lines), -1, 1, 0, 40)
 			fill(0, 155, 255, a)
 			noStroke()
 			rect(0, 0, step, step)
@@ -49,7 +80,8 @@ function patternOne(m, step) {
 		}
 	}
 
-	stroke(255, 255, 255)
+	strokeWeight(3)
+	getStroke.outer()
 	for (let p = 0; p <= m; p += step) {
 		line(p, 0, p, m)
 		line(0, p, m, p)
@@ -136,3 +168,4 @@ function patternTwo(m, step) {
 
 window.setup = setup
 window.draw = draw
+window.mousePressed = setVars

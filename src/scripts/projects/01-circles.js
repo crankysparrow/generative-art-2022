@@ -1,114 +1,80 @@
 import { paletteFromUrl } from '../utils/utils.js'
-import { AllTheCircles } from '../utils/Circles.js'
-import { Controls } from '../utils/Controls.js'
+import { Circles } from './01-CirclePack.ts'
 
-// window.addEventListener('unload', console.clear)
-// if (module.hot) {
-// 	module.hot.dispose(() => {
-// 		window.location.reload()
-// 	})
-// }
-
-let circles, palette, controls, paletteCurrent, m, paletteInput
-// let url = 'https://coolors.co/985f99-9684a1-aaacb0-b6c9bb-bfedc1-f2ff49-ff4242'
-// let url = 'https://coolors.co/32de8a-5e807f-74226c-4b2142-dee2f7-19191d-252541'
-// let url = 'https://coolors.co/32de8a-5e807f-4b2142-19191d-252541'
-// let url = 'https://coolors.co/011936-465362-82a3a1'
-let url = 'https://coolors.co/f94144-f3722c-f8961e-f9844a-f9c74f-90be6d-43aa8b-4d908e-577590-277da1'
+let info = document.querySelector('.info')
+let circles, m, p
+let colors = [
+	'#0ab03c',
+	'#2756fe',
+	'#31379e',
+	'#41faeb',
+	'#6333f5',
+	'#8bfc1a',
+	'#c850f1',
+	'#dd2525',
+	'#ee73dd',
+	'#fab97c',
+	'#fe2e8b',
+	'#ff831e',
+]
 
 function setup() {
 	createCanvas(window.innerWidth, window.innerHeight)
-	buildControls()
-
-	palette = shuffle(paletteFromUrl(url))
-	paletteCurrent = shuffle(palette)
-
 	noLoop()
-}
 
-// window.addEventListener('unload', console.clear)
-// if (module.hot) {
-// 	module.hot.dispose(() => {
-// 		window.location.reload()
-// 	})
-// }
-
-function buildControls() {
-	controls = new Controls()
-
-	paletteInput = controls.createPaletteInput({
-		id: 'paletteinput',
-		labelString:
-			'for a <strong>custom palette</strong>, enter a url from <a href="http://coolors.co">coolors.co</a>: ',
-		onPaletteUpdate: (p) => {
-			paletteCurrent = p
-			redraw()
-		},
-	})
+	p = createP('')
+	p.parent(info)
 }
 
 function makeCircles() {
 	m = floor(min(width, height))
-
-	circles = new AllTheCircles({
-		size: m,
-		width: width,
-		height: height,
-		overlapEdges: false,
-		multMin: 0.04,
-		multMax: 0.1,
-		space: 5,
-		build: false,
-		stepSize: 10,
-		attemptsEachStep: 200,
+	circles = new Circles({
+		width,
+		height,
+		space: 2,
 	})
 
-	let s = 0.2
-	while (s > 0.1) {
-		circles.newCircle(Math.floor(m * s))
-		s -= 0.02
-	}
-	while (s > 0.06) {
-		circles.newCircle(Math.floor(m * s))
-		s -= 0.005
-	}
-	circles.circleTime()
+	circles.pack(170, 5, 2)
+	circles.pack(120, 3, 3)
+	circles.pack(80, 10, 10)
+	circles.pack(50, 30)
+	circles.pack(30, 100)
+	circles.pack(20, 1000)
+	circles.pack(15, 2000)
 }
 
 function draw() {
 	makeCircles()
 	noStroke()
 
-	paletteCurrent = shuffle(palette)
+	let palette = shuffle(colors)
 
-	background(paletteCurrent.splice(0, 1))
+	background(palette.pop())
+	let colorLines = palette.pop()
+	let colorFills = palette.pop()
 
-	let colorLines = paletteCurrent.splice(0, 1)
-	let colorFills = paletteCurrent.splice(0, 1)
+	fill(colorFills)
+	noStroke()
+	circles.forEach((c) => c.draw())
 
-	let len = circles.circles.length
+	let lines = 0
+	while (lines < 10) {
+		let [c1, c2] = [random(circles), random(circles)]
+		if (c1.distanceTo(c2) > m / 2) continue
 
-	circles.circles.forEach((c, i) => {
-		fill(colorFills)
-		noStroke()
-		circle(c.x, c.y, c.d)
+		fill(colorLines)
+		circle(c1.x, c1.y, c1.dia * 0.4)
+		circle(c2.x, c2.y, c2.dia * 0.4)
 
-		if (i > len / 2 && random() < 0.5) {
-			let c2 = circles.circles[floor(random(len / 2))]
-			if (dist(c.x, c.y, c2.x, c2.y) > m * 0.5) {
-				return
-			}
+		strokeWeight(3)
+		stroke(colorLines)
+		noFill()
+		line(c1.x, c1.y, c2.x, c2.y)
 
-			fill(colorLines)
-			circle(c.x, c.y, c.d * 0.4)
-			circle(c2.x, c2.y, c2.d * 0.4)
+		lines++
+	}
 
-			strokeWeight(floor(m * 0.005))
-			stroke(colorLines)
-			noFill()
-			line(c.x, c.y, c2.x, c2.y)
-		}
-	})
+	p.html(`generated ${circles.length} circles in ${circles.stats.attempts} attempts`)
 }
 
 function windowResized() {
@@ -123,7 +89,6 @@ window.windowResized = windowResized
 window.addEventListener('keypress', (e) => {
 	if (e.code == 'Space') {
 		e.preventDefault()
-		// makeCircles()
 		redraw()
 	}
 })

@@ -1,10 +1,18 @@
 ---
 date: 2022-10-26
 title: '15 patterns'
-tags: ['experiment']
+tags: ['experiment', 'show']
+img: '15-vases.jpg'
 ---
 
 extends ../layouts/p5-art.pug
+
+block info 
+	.info click to regenerate 
+		br
+		| vaguely inspired by 
+		a(href='https://www.google.com/search?rlz=1C5CHFA_enUS842US842&q=attic+pottery+patterns&tbm=isch&sa=X&ved=2ahUKEwiu4K3Hluz-AhWQLFkFHbDDAG0Q0pQJegQIDxAB&biw=840&bih=883&dpr=2')
+			| patterns on ancient greek vases
 
 block append scripts
 	script(src='/scripts/projects/15.js' type='module')

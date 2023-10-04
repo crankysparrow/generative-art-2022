@@ -1,31 +1,15 @@
 extends ../layouts/normal.pug 
 
 block content
-	table.main
-		tr 
-			th title 
-			th date started 
-			th tags 
-		each exp in collections.experiment
-			tr
-				td
-					a(href=exp.url)=exp.data.title
-				td
-					span  !{filters.formatDate(exp.date)}
-				td
-					div.taglist 
-						each tag in exp.data.tags 
-							span=tag
 
-
-	//- 	<li>
-	//- 		<a href={{this.url}}>
-	//- 			{{#if this.data.title}} 
-	//- 				{{ this.data.title }}
-	//- 			{{else}}
-	//- 				{{this.url}}
-	//- 			{{/if}}
-	//- 		</a>
-	//- 			{{ formatDate this.date }}
-	//- 			</li>
-	//- {{/each}}
+	div.gallery
+		each item in collections.show 
+			div.gallery-item 
+				a(href=item.url).gallery-link
+					.gallery-img-wrap
+						img(src=`images/${item.data.img}` alt=item.data.title).gallery-img 
+						img(src=`images/${item.data.img}`).gallery-img.gallery-img-extra
+		div.gallery-item.info-item
+			h1 generative art experiments 2022 
+			.by created by 
+				a(href='https://michelleenos.com' target='_blank') michelle enos

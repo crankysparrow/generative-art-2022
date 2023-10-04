@@ -3,8 +3,8 @@
 		"allowJs": true,
 		"types": ["p5/global"],
 		"target": "ES6",
-		"checkJs": false,
-		"outDir": "./_site"
+		"outDir": "./_site",
+		"moduleResolution": "node"
 	},
 	"include": ["./src/scripts/**/*.ts"],
 	"exclude": ["./_site/**/*", "./*.js"]

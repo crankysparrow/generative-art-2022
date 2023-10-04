@@ -14,8 +14,8 @@ let possibles = [
 	{ vx1: 0.22, vx2: 0.0164, vy1: -0.014, vy2: -1.337 },
 ]
 
-let minLength = 100
-let idealLength = 300
+let minLength = 200
+let idealLength = 700
 let meetThreshold = 3
 let circlePackRadius = 50
 let circlePackingAttempts = 20
@@ -88,37 +88,9 @@ function makeVectorCurves(startAt = 0) {
 
 	console.log(vectors)
 	console.log(
-		`started at ${startAt}, finished with ${vectors.length} curvy particles. The longest is ${longest}. The shortest is ${shortest}`
+		`started at ${startAt}, finished with ${vectors.length} curvy particles.
+		The longest is ${longest}. The shortest is ${shortest}`
 	)
-}
-
-function setup() {
-	createCanvas(700, 500)
-	// background('#faf1f8')
-
-	let bgs = [color(255, 255, 250, 150), color(236, 222, 212, 150), color(252, 244, 237, 150)]
-	strokeWeight(200)
-	for (let i = 0; i < 5; i++) {
-		stroke(random(bgs))
-		line(0 - random(width), 0 - random(height), width + random(width), height + random(height))
-		line(width + random(width), height + random(height), 0 - random(width), 0 - random(height))
-		line(0 - random(width), height + random(height), width + random(width), 0 - random(height))
-		line(width + random(width), 0 - random(height), 0 - random(width), height + random(height))
-	}
-	palette = shuffle(palette)
-	directionToDuplicateColor = random([1, 2, 3, 4, 5, 6, 7])
-
-	vx1 = random(0.1, 1.2)
-	vx2 = random(0.01, 0.08)
-	vy1 = random(0.01, 0.08)
-	vy2 = random(0.5, 1.5)
-	// ;({ vx1, vx2, vy1, vy2 } = possibles[6])
-
-	console.log({ vx1, vx2, vy1, vy2 })
-	let btn = createButton('add curves')
-	btn.mousePressed(drawSomeStuff)
-
-	noLoop()
 }
 
 function drawSomeStuff() {
@@ -141,7 +113,6 @@ function drawSomeStuff() {
 	for (let i = startAt; i < vectors.length; i++) {
 		let len = vectors[i].points.length
 		beginShape()
-		// stroke(100, 10, 250, map(len, 10, 80, 150, 255))
 		let c = color(palette[vectors[i].col])
 		c.setAlpha(alphaVal)
 		stroke(c)
@@ -154,10 +125,6 @@ function drawSomeStuff() {
 
 		endShape()
 	}
-}
-
-function draw() {
-	drawSomeStuff()
 }
 
 function findForceX(x, y) {
@@ -401,6 +368,39 @@ function findVertex(type, x, y, z) {
 		let vy = cos(y)
 		return createVector(vx, vy)
 	}
+}
+
+function setup() {
+	createCanvas(window.innerWidth, window.innerHeight)
+	// background('#faf1f8')
+
+	let bgs = [color(255, 255, 250, 150), color(236, 222, 212, 150), color(252, 244, 237, 150)]
+	strokeWeight(200)
+	for (let i = 0; i < 5; i++) {
+		stroke(random(bgs))
+		line(0 - random(width), 0 - random(height), width + random(width), height + random(height))
+		line(width + random(width), height + random(height), 0 - random(width), 0 - random(height))
+		line(0 - random(width), height + random(height), width + random(width), 0 - random(height))
+		line(width + random(width), 0 - random(height), 0 - random(width), height + random(height))
+	}
+	palette = shuffle(palette)
+	directionToDuplicateColor = random([1, 2, 3, 4, 5, 6, 7])
+
+	vx1 = random(0.1, 1.2)
+	vx2 = random(0.01, 0.08)
+	vy1 = random(0.01, 0.08)
+	vy2 = random(0.5, 1.5)
+	// ;({ vx1, vx2, vy1, vy2 } = possibles[6])
+
+	console.log({ vx1, vx2, vy1, vy2 })
+	let btn = createButton('add curves')
+	btn.mousePressed(drawSomeStuff)
+
+	noLoop()
+}
+
+function draw() {
+	drawSomeStuff()
 }
 
 window.setup = setup

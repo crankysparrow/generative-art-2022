@@ -104,6 +104,7 @@ class WaveFronds {
 		this.step = step ?? floor(random(3, 40))
 		this.yMid = yMid ?? height / 2
 		this.width = this.step * random(3, 8)
+		colorMode(RGB)
 	}
 
 	update() {
@@ -143,6 +144,7 @@ class WaveWiggle {
 		this.end = end ?? width
 		this.step = step ?? 10
 		this.yMid = yMid ?? height / 2
+		colorMode(RGB)
 		background(255)
 	}
 
@@ -178,6 +180,7 @@ class WavePaint {
 		this.end = end ?? width
 		this.step = step ?? random(10, 30)
 		this.yMid = yMid ?? height / 2
+		colorMode(RGB)
 		background(255)
 	}
 
@@ -345,6 +348,7 @@ class WaveAdditive {
 		this.step = step ?? 10
 		this.start = 0
 		this.end = width
+		colorMode(RGB)
 		background(255)
 	}
 

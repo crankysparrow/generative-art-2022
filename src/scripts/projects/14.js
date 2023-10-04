@@ -1,29 +1,45 @@
 let c1 = '#600aa6'
 let c2 = '#a483eb'
+let colors = ['#a483eb', '#5203d2', '#f6fb5f', '#827ec9', '#a7f4f4', '#7404ba', '#f65229']
 let points
-
 let p
+
+let vars = {}
+
+function setVars() {
+	colors = shuffle(colors)
+	c1 = colors[0]
+	c2 = colors[1]
+
+	let steps = random([20, 24, 28, 16])
+	points = dots(steps)
+
+	vars.a1 = random(10, 15)
+	vars.a2 = random(15, 35)
+
+	vars.b1 = random(-35, -10)
+	vars.b2 = vars.b1 * -1
+
+	vars.c1 = random(2, 25)
+	vars.c2 = random(10, 25)
+
+	vars.e1 = random(10, 25)
+	vars.e2 = random(-25, -5)
+}
 
 function setup() {
 	createCanvas(500, 500)
 	createLoop({ duration: 4 })
-
-	points = dots(20)
-	console.log(points.length)
-	p = createP('')
+	setVars()
 }
 
 function draw() {
-	// p.html(animLoop.progress)
 	background(0)
-	fill('#fff')
-	noStroke()
-	// drawDots(points, 2)
 
 	noFill()
-	stroke(c1)
 	strokeWeight(2)
-	noFill()
+
+	stroke(c1)
 
 	for (let xi = 2; xi < points.length; xi += 4) {
 		for (let yi = 2; yi < points.length; yi += 4) {
@@ -32,8 +48,9 @@ function draw() {
 
 			push()
 			translate(x, y)
-			let a = map(sin(animLoop.theta), -1, 1, 10, 30)
-			let b = map(cos(animLoop.theta), -1, 1, -30, 30)
+			let a = map(sin(animLoop.theta), -1, 1, vars.a1, vars.a2)
+			// let b = map(cos(animLoop.theta), -1, 1, -30, 30)
+			let b = map(cos(animLoop.theta), -1, 1, vars.b1, vars.b2)
 			otherShape(a, b)
 			pop()
 		}
@@ -48,23 +65,18 @@ function draw() {
 			push()
 			translate(x, y)
 
-			let nr = xi / points.length + yi / points.length
-			let rotation = animLoop.theta + nr
-
 			if ((xi % 8 == 0 && yi % 8 == 0) || (xi % 8 !== 0 && yi % 8 !== 0)) {
-				let a = map(sin(animLoop.theta), -1, 1, 5, 20)
+				// let a = map(sin(animLoop.theta), -1, 1, 5, 20)
+				let a = map(sin(animLoop.theta), -1, 1, vars.c1, vars.c2)
 				let b = map(sin(animLoop.theta), -1, 1, -40, 20)
 				otherShape(a, b)
 			} else {
-				let a = map(sin(animLoop.theta), -1, 1, 10, 20)
-				let b = map(sin(animLoop.theta), -1, 1, 0, 30)
+				// let a = map(sin(animLoop.theta), -1, 1, 10, 20)
+				let a = map(sin(animLoop.theta), -1, 1, vars.e1, vars.e1 + 10)
+				// let b = map(sin(animLoop.theta), -1, 1, 0, 30)
+				let b = map(sin(animLoop.theta), -1, 1, vars.e2, vars.e2 + 30)
 				otherShape(a, b)
 			}
-
-			// rotate(rotation)
-			// let a = 20
-			// let b = map(sin(animLoop.theta), -1, 1, 0, 40)
-			// let b = map(animLoop.theta, 0, TWO_PI, -40, 40)
 
 			pop()
 		}
@@ -131,7 +143,6 @@ function dots(steps, { offset = false, w = width, h = height } = {}) {
 
 		pointsArr.push(pointsRow)
 	}
-	noFill()
 
 	return pointsArr
 }
@@ -146,3 +157,7 @@ function drawDots(points, radius = 5) {
 
 window.setup = setup
 window.draw = draw
+
+window.mouseClicked = () => {
+	setVars()
+}

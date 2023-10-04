@@ -1,10 +1,16 @@
 ---
 date: 2022-11-05
 title: 'mandelbrot'
-tags: [ 'experiment', 'attractors']
+tags: [ 'experiment', 'attractors', 'show'] 
+img: 'mandelbrot.jpg'
 ---
 
 extends ../layouts/p5-art.pug
+
+block info 
+	.content-wrap(style='display: flex;')
+		#canvas
+		.info-container(style='align-self: end')
 
 block append scripts
 	script(src='/scripts/projects/mandelbrot.js' type='module')
